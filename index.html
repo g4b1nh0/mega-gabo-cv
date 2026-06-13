@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>CV Gabo - Mega Man (classic) Style</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+        body { 
+            background-color: #0D1117; 
+            color: #00FF9C; 
+            font-family: 'Press Start 2P', cursive; 
+            text-align: center; 
+            margin: 0; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            overflow: hidden;
+        }
+        canvas { 
+            background-color: #000; 
+            border: 4px solid #1F6FEB; 
+            box-shadow: 0 0 20px #1F6FEB; 
+            image-rendering: pixelated; 
+        }
+        h1 { font-size: 11px; text-transform: uppercase; line-height: 1.6; margin-bottom: 5px; max-width: 800px; height: 40px; color: #FFF; }
+        .controls-text { font-size: 9px; color: #8b949e; margin-top: 15px; }
+        
+        #interview-stage {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 800px;
+            height: 400px;
+            background-color: #0D1117;
+            border: 4px solid #00FF9C;
+            box-shadow: 0 0 20px #00FF9C;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .btn {
+            background-color: #1F6FEB;
+            color: white;
+            border: 2px solid white;
+            padding: 15px 30px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 12px;
+            margin: 10px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn:hover { background-color: #38bdf8; color: black; }
+        .summary-text { font-size: 10px; line-height: 2; margin-bottom: 20px; color: #8b949e; }
+        .highlight { color: #00FF9C; }
+    </style>
+</head>
+<body>
+    <h1 id="stage-title">MEGA CV - GABRIEL MARÍN</h1>
+    
+    <canvas id="game" width="800" height="400"></canvas>
+    
+    <div class="controls-text" id="controls-ui">
+        Directions 🕹️: [A][D] Move | [W] o [SPACE] Jump | [J] Shoot | [ENTER] Next
+    </div>
+
+    <div id="interview-stage">
+        <h2 style="color: #facc15; font-size: 18px; margin-bottom: 10px;">All stages completed!</h2>
+        <div class="summary-text">
+            <strong>Gabriel Marín</strong> - <span class="highlight">Data Engineer, Data Governance Lead</span><br><br>
+            Collected Skills:<br>
+            ⚡ OMS Crusher | 🌩️ Cloud Dash | ❄️ Data management Blade | 🧠 MDM and Governance/Stewardship Shield<br><br>
+            Player is ready for his next challenge!
+        </div>
+        <div>
+            <a href="https://github.com/g4br13lm4r1n" target="_blank" class="btn">Github 💻</a>
+            <a href="https://www.linkedin.com/in/g4br13lm4r1n" target="_blank" class="btn">LinkedIn ✉️</a>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('game');
+        const ctx = canvas.getContext('2d');
+        const titleEl = document.getElementById('stage-title');
+        const interviewEl = document.getElementById('interview-stage');
+        const controlsUI = document.getElementById('controls-ui');
+
+        let keys = {};
+        window.addEventListener('keydown', e => keys[e.code] = true);
+        window.addEventListener('keyup', e => keys[e.code] = false);
+
+        const STAGES = [
+            {
+                id: "Level 1 - Wedo Technologies",
+                title: "2013 to 2015  -> Revenue assurance implementations in Telco and Retail.",
+                boss: { name: "Revenue assurance", hp: 100, color: "#f97316", w: 100, h: 140, text: "First job" },
+                env: { bg: "#1f2937", floor: "#4b5563", accent: "#f97316" }, 
+                player: { weapon: "Coding basics buster", main: "#1F6FEB", light: "#38bdf8", bColor: "#facc15" },
+                unlock: { title: "System's troubleshooting spark acquired!", items: ["> PL/SQL", "> Shell Scripting", "> Java & XML",
+                    "> UNIX basic commands"] }
+            },
+            {
+                id: "Level 2 - Liverpool/Walmart",
+                title: "2015 - 2019 -> Order Management Systems, complex platforms as the backbone of ecommerce ecosystems.",
+                boss: { name: "Queued orders", hp: 120, color: "#3b82f6", w: 80, h: 160, text: "Coding standards" },
+                env: { bg: "#0f172a", floor: "#000000", accent: "#3b82f6" }, 
+                player: { weapon: "System's troubleshooting spark⚡", main: "#ea580c", light: "#fdba74", bColor: "#ea580c" }, 
+                unlock: { title: "OMS Crusher ", items: ["> 🌩️ Java and spring framework", "> Jenkins", "> IBM Sterling OMS", 
+                            "> App. Servers"] }
+            },
+              {
+                id: "Level 3 - Norstrom",
+                title: "2019-2021 A decadent OMS needs a last support. Coexistence with the inhouse OMS, migration to cloud and decoupling.",
+                boss: { name: "Invoice Demon", hp: 120, color: "#3b82f6", w: 80, h: 160, text: "QUEUE ERROR" },
+                env: { bg: "#0f172a", floor: "#000000", accent: "#3b82f6" }, 
+                player: { weapon: "OMS Crusher ⚡", main: "#ea580c", light: "#fdba74", bColor: "#ea580c" }, 
+                unlock: { title: "Cloud Dash Acquired!", items: ["> 🌩️ GCP Basics", 
+                "> Docker & Kubernetes", "> Datadog/New Relic", "> Jmeter"] }
+            },
+            {
+                id: "Level 4 - Philip Morris Mexico",
+                title: "2021-2025 -> Datalake disaster, migration to the new data platform needed to support Data Governance raise.",
+                boss: { name: "Legacy Data Ocean", hp: 140, color: "#D73A49", w: 90, h: 130, text: "Ungoverned Data" },
+                env: { bg: "#1a202c", floor: "#1F6FEB", accent: "#facc15" }, 
+                player: { weapon: "Cloud Dash🌩️", main: "#64748b", light: "#cbd5e1", bColor: "#e2e8f0" }, 
+                unlock: { title: "Data Management blade acquired!", items: ["> ❄️ Snowflake", "> dbt & Matillion", "> Medallion architecture",
+                            "AWS Data Services", "Scrum","Data Delivery"] }
+            },
+            {
+                id: "Level 5 - DANONE",
+                title: "2025-2026 Danone -> Invoice to cash issues due to Customer's MDM problems. Nulls, duplicates and inconsistencies attack!",
+                boss: { name: "SAP ECC", hp: 160, color: "#00A859", w: 110, h: 120, text: "No DQ placed" },
+                env: { bg: "#022c22", floor: "#ffffff", accent: "#00A859" }, 
+                player: { weapon: "Data Management Blade ❄️", main: "#ffffff", light: "#38bdf8", bColor: "#FFF" }, 
+                unlock: { title: "MDM and Governance/Stewardship Shield Acquired!", items: ["> 🧠 MDM", "> SAP ECC Data Model (KNA1, KNB1, KNVV)", 
+                                "> Team Management", "> Stakeholder Management","> Data Quality Dimensions"] }
+            }
+        ];
+
+        let currentStageIdx = 0;
+        let stage = STAGES[currentStageIdx];
+        let gameState = 'INTRO'; // Inicia en la pantalla de introducción
+
+        const player = { x: 50, y: 300, w: 32, h: 48, dy: 0, jump: -12, grounded: false, facing: 'right' };
+        let currentBoss = { ...stage.boss, startY: 190, y: 190, x: 650 };
+        let projectiles = [];
+        const gravity = 0.7;
+
+        function loadStage(idx) {
+            if (idx >= STAGES.length) {
+                gameState = 'END';
+                canvas.style.display = 'none';
+                controlsUI.style.display = 'none';
+                titleEl.innerHTML = "Thanks for playing! Please check my LinkedIn and Github for more info about my experience and projects.";
+                interviewEl.style.display = 'flex';
+                return;
+            }
+            stage = STAGES[idx];
+            titleEl.innerHTML = stage.title;
+            canvas.style.borderColor = stage.env.accent;
+            currentBoss = { ...stage.boss, startY: 200, y: 200, x: 650 };
+            player.x = 50; player.y = 300;
+            projectiles = [];
+            gameState = 'PLAYING';
+        }
+
+        function drawMegaGaboX(ctx, p, colors) {
+            ctx.save();
+            ctx.translate(p.x + p.w/2, p.y + p.h/2);
+            if (p.facing === 'left') ctx.scale(-1, 1);
+            const bx = -p.w/2, by = -p.h/2;
+
+            ctx.fillStyle = colors.main;
+            ctx.fillRect(bx + 2, by + 36, 12, 12); ctx.fillRect(bx + 16, by + 32, 14, 16); 
+            ctx.fillStyle = colors.light; ctx.fillRect(bx + 16, by + 32, 14, 2); 
+            ctx.fillRect(bx + 6, by + 26, 6, 10); ctx.fillRect(bx + 18, by + 22, 8, 10);
+            ctx.fillStyle = colors.main; ctx.fillRect(bx + 6, by + 16, 18, 12); 
+            ctx.fillStyle = colors.light; ctx.fillRect(bx + 10, by + 18, 10, 6); 
+            ctx.fillStyle = colors.main; ctx.fillRect(bx + 8, by + 0, 16, 16); 
+            ctx.fillStyle = '#f8b4a0'; ctx.fillRect(bx + 12, by + 4, 10, 8);
+            ctx.fillStyle = '#FFF'; ctx.fillRect(bx + 17, by + 6, 2, 4); 
+            ctx.fillStyle = '#facc15'; ctx.fillRect(bx + 14, by + 0, 4, 2); ctx.fillRect(bx + 22, by + 4, 2, 6); 
+            ctx.fillStyle = colors.light; ctx.fillRect(bx + 2, by + 16, 5, 10);
+            ctx.fillStyle = colors.main; ctx.fillRect(bx + 20, by + 14, 16, 12); 
+            ctx.fillStyle = '#D73A49'; ctx.fillRect(bx + 34, by + 16, 2, 8); 
+            ctx.restore();
+        }
+
+        function drawProjectile(ctx, p, weapon) {
+            ctx.fillStyle = stage.player.bColor;
+            if (weapon.includes("SNOWFLAKE")) {
+                ctx.fillRect(p.x, p.y + 3, 10, 2); ctx.fillRect(p.x + 4, p.y, 2, 8);  
+                ctx.fillStyle = stage.player.light; ctx.fillRect(p.x + 3, p.y + 2, 4, 4);
+            } else if (weapon.includes("CLOUD")) {
+                ctx.fillRect(p.x, p.y, 14, 8); ctx.fillStyle = '#FFF'; ctx.fillRect(p.x+2, p.y+2, 10, 4);
+            } else {
+                ctx.fillRect(p.x, p.y, 12, 8);
+            }
+        }
+
+        function update() {
+            if (gameState === 'INTRO') {
+                if (keys['Enter']) { keys['Enter'] = false; loadStage(0); }
+                return;
+            }
+            if (gameState === 'VICTORY') {
+                if (keys['Enter']) { keys['Enter'] = false; currentStageIdx++; loadStage(currentStageIdx); }
+                return;
+            }
+            if (gameState === 'END') return;
+
+            if (keys['KeyA']) { player.x -= 6; player.facing = 'left'; }
+            if (keys['KeyD']) { player.x += 6; player.facing = 'right'; }
+            if ((keys['KeyW'] || keys['Space']) && player.grounded) { player.dy = player.jump; player.grounded = false; }
+
+            player.dy += gravity; player.y += player.dy;
+            if (player.y + player.h >= 340) { player.y = 340 - player.h; player.dy = 0; player.grounded = true; }
+
+            if (keys['KeyJ']) {
+                if (projectiles.length < 5) {
+                    const dir = player.facing === 'right' ? 1 : -1;
+                    projectiles.push({ x: player.facing === 'right' ? player.x + player.w : player.x - 10, y: player.y + 16, speed: 10 * dir, w: 12, h: 8 });
+                    keys['KeyJ'] = false; 
+                }
+            }
+
+            currentBoss.y = currentBoss.startY + Math.sin(Date.now() / 300) * 20;
+
+            for (let i = projectiles.length - 1; i >= 0; i--) {
+                let p = projectiles[i];
+                p.x += p.speed;
+                
+                if (currentBoss.hp > 0 && p.x < currentBoss.x + currentBoss.w && p.x + p.w > currentBoss.x && p.y < currentBoss.y + currentBoss.h && p.y + p.h > currentBoss.y) {
+                    currentBoss.hp -= 8; 
+                    projectiles.splice(i, 1);
+                    if (currentBoss.hp <= 0) gameState = 'VICTORY';
+                } else if (p.x > canvas.width || p.x < -20) {
+                    projectiles.splice(i, 1);
+                }
+            }
+
+            if (player.x < 0) player.x = 0;
+            if (player.x > canvas.width - player.w) player.x = canvas.width - player.w;
+        }
+
+        function draw() {
+            if (gameState === 'END') return;
+
+            // DIBUJAR PANTALLA DE INTRODUCCIÓN
+            if (gameState === 'INTRO') {
+                ctx.fillStyle = '#0D1117'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.fillStyle = '#00FF9C'; ctx.font = "14px 'Press Start 2P'";
+                ctx.fillText("2026 year. Data in the companies", 210, 120);
+                ctx.fillText("IS IN CHAOS.", 310, 150);
+                
+                ctx.fillStyle = '#FFF'; ctx.font = "10px 'Press Start 2P'";
+                ctx.fillText("Gabriel Marín, a data engineer and former software engineer ", 120, 200);
+                ctx.fillText("wakes up in a world where the companies are looking ", 120, 230);
+                ctx.fillText("for a brave team player. Someone fearless ", 120, 260);
+                ctx.fillText("who can learn technologies to improve data management", 120, 290);
+                ctx.fillText("This is his story.", 220, 320);
+
+                if (Math.floor(Date.now() / 500) % 2 === 0) {
+                    ctx.fillStyle = '#facc15'; ctx.fillText("Press [ENTER] to start...", 230, 370);
+                }
+                return;
+            }
+
+            // DIBUJAR NIVELES
+            ctx.fillStyle = stage.env.bg; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = stage.env.floor; ctx.fillRect(0, 340, canvas.width, 60);
+            ctx.fillStyle = stage.env.accent; ctx.fillRect(0, 340, canvas.width, 4);
+
+            ctx.fillStyle = '#FFF'; ctx.font = "10px 'Press Start 2P'";
+            ctx.fillText(stage.id, 10, 20);
+            ctx.fillStyle = stage.player.light; ctx.fillText("WPN: " + stage.player.weapon, 10, 40);
+
+            drawMegaGaboX(ctx, player, stage.player);
+
+            if (gameState === 'PLAYING') {
+                ctx.fillStyle = stage.boss.color; ctx.fillRect(currentBoss.x, currentBoss.y, currentBoss.w, currentBoss.h);
+                ctx.fillStyle = '#000'; ctx.font = "10px 'Press Start 2P'";
+                ctx.fillText(stage.boss.text, currentBoss.x + 10, currentBoss.y + currentBoss.h/2);
+                
+                ctx.fillStyle = '#FFF'; ctx.fillText(currentBoss.name, currentBoss.x - 40, currentBoss.y - 20);
+                ctx.fillStyle = '#555'; ctx.fillRect(currentBoss.x - 40, currentBoss.y - 10, 150, 8);
+                ctx.fillStyle = stage.boss.color; ctx.fillRect(currentBoss.x - 40, currentBoss.y - 10, Math.max(0, currentBoss.hp), 8);
+            } 
+            else if (gameState === 'VICTORY') {
+                ctx.fillStyle = '#000000DD'; ctx.fillRect(0,0, canvas.width, canvas.height);
+                ctx.fillStyle = '#00FF9C'; ctx.font = "14px 'Press Start 2P'";
+                ctx.fillText(stage.unlock.title, 200, 120);
+                
+                ctx.fillStyle = '#FFF'; ctx.font = "10px 'Press Start 2P'";
+                stage.unlock.items.forEach((item, idx) => { ctx.fillText(item, 180, 170 + (idx * 25)); });
+                
+                if (Math.floor(Date.now() / 500) % 2 === 0) {
+                    ctx.fillStyle = '#facc15'; ctx.fillText("Press [ENTER] to continue...", 220, 320);
+                }
+            }
+
+            projectiles.forEach(p => drawProjectile(ctx, p, stage.player.weapon));
+        }
+
+        function loop() { update(); draw(); requestAnimationFrame(loop); }
+        loop();
+    </script>
+</body>
+<p style="font-size: 7px; color: #555; max-width: 600px; margin: 20px auto; line-height: 1.4;">
+    <strong>Disclaimer / legal note</strong> This is a non-profit project developed exclusively for educational purposes and as a professional portfolio. The mechanics and visual aesthetics are inspired by 16-bit platform games. No interactive elements, registered trademarks, code, or proprietary resources from Capcom Co., Ltd. are used. All rights to the original characters belong to their respective owners.
+</p>
+</html>
