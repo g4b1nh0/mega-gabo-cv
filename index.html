@@ -129,7 +129,7 @@
     <div id="interview-stage">
         <h2 style="color: #facc15; font-size: 18px; margin-bottom: 10px;">All stages completed!</h2>
         <div class="summary-text">
-            <strong>Gabriel Marín</strong> - <span class="highlight">Data Engineer, Data Governance Lead</span><br><br>
+            <strong>Gabriel Marín</strong> - <span class="highlight">Data Engineer | Data Quality SME |Data Governance Lead</span><br><br>
             Collected Skills:<br>
             ⚡ OMS Crusher | 🌩️ Cloud Dash | ❄️ Data management Blade | 🧠 MDM and Governance/Stewardship Shield<br><br>
             Player is ready for his next challenge!
@@ -172,7 +172,7 @@
             {
                 id: "Level 1 - Wedo Technologies",
                 title: "2013 to 2015  -> Revenue assurance implementations in Telco and Retail.",
-                boss: { name: "Revenue assurance", hp: 100, color: "#f97316", w: 100, h: 140, text: "First job" },
+                boss: { name: "Revenue Buffalo", hp: 100, color: "#38bdf8", w: 100, h: 120, text: "" },
                 env: { bg: "#1f2937", floor: "#4b5563", accent: "#f97316" }, 
                 player: { weapon: "Coding basics buster", main: "#1F6FEB", light: "#38bdf8", bColor: "#facc15" },
                 unlock: { title: "System's troubleshooting spark acquired!", items: ["> PL/SQL", "> Shell Scripting", "> Java & XML", "> UNIX basic commands"] }
@@ -180,7 +180,7 @@
             {
                 id: "Level 2 - Liverpool/Walmart",
                 title: "2015 - 2019 -> Order Management Systems, complex platforms as the backbone of ecommerce ecosystems.",
-                boss: { name: "Queued orders", hp: 120, color: "#3b82f6", w: 80, h: 160, text: "Coding standards" },
+                boss: { name: "Queued orders", hp: 120, color: "#3b82f6", w: 70, h: 130, text: "" },
                 env: { bg: "#0f172a", floor: "#000000", accent: "#3b82f6" }, 
                 player: { weapon: "System's troubleshooting spark⚡", main: "#ea580c", light: "#fdba74", bColor: "#ea580c" }, 
                 unlock: { title: "OMS Crusher ", items: ["> 🌩️ Java and spring framework", "> Jenkins", "> IBM Sterling OMS", "> App. Servers"] }
@@ -188,7 +188,7 @@
             {
                 id: "Level 3 - Norstrom",
                 title: "2019-2021 A decadent OMS needs a last support. Coexistence with the inhouse OMS, migration to cloud and decoupling.",
-                boss: { name: "Invoice Demon", hp: 120, color: "#3b82f6", w: 80, h: 160, text: "QUEUE ERROR" },
+                boss: { name: "Invoice Demon", hp: 120, color: "#3b82f6", w: 70, h: 100, text: "" },
                 env: { bg: "#0f172a", floor: "#000000", accent: "#3b82f6" }, 
                 player: { weapon: "OMS Crusher ⚡", main: "#ea580c", light: "#fdba74", bColor: "#ea580c" }, 
                 unlock: { title: "Cloud Dash Acquired!", items: ["> 🌩️ GCP Basics", "> Docker & Kubernetes", "> Datadog/New Relic", "> Jmeter"] }
@@ -196,7 +196,7 @@
             {
                 id: "Level 4 - Philip Morris Mexico",
                 title: "2021-2025 -> Datalake disaster, migration to the new data platform needed to support Data Governance raise.",
-                boss: { name: "Legacy Data Ocean", hp: 140, color: "#D73A49", w: 90, h: 130, text: "Ungoverned Data" },
+                boss: { name: "Legacy Data Ocean", hp: 140, color: "#D73A49", w: 65, h: 115, text: "" },
                 env: { bg: "#1a202c", floor: "#1F6FEB", accent: "#facc15" }, 
                 player: { weapon: "Cloud Dash🌩️", main: "#64748b", light: "#cbd5e1", bColor: "#e2e8f0" }, 
                 unlock: { title: "Data Management blade acquired!", items: ["> ❄️ Snowflake", "> dbt & Matillion", "> Medallion architecture", "AWS Data Services", "Scrum","Data Delivery"] }
@@ -204,7 +204,7 @@
             {
                 id: "Level 5 - DANONE",
                 title: "2025-2026 Danone -> Invoice to cash issues due to Customer's MDM problems. Nulls, duplicates and inconsistencies attack!",
-                boss: { name: "SAP ECC", hp: 160, color: "#00A859", w: 110, h: 120, text: "No DQ placed" },
+                boss: { name: "SAP ECC", hp: 160, color: "#00A859", w: 80, h: 140, text: "" },
                 env: { bg: "#022c22", floor: "#ffffff", accent: "#00A859" }, 
                 player: { weapon: "Data Management Blade ❄️", main: "#ffffff", light: "#38bdf8", bColor: "#FFF" }, 
                 unlock: { title: "MDM and Governance/Stewardship Shield Acquired!", items: ["> 🧠 MDM", "> SAP ECC Data Model (KNA1, KNB1, KNVV)", "> Team Management", "> Stakeholder Management","> Data Quality Dimensions"] }
@@ -218,6 +218,11 @@
         const player = { x: 50, y: 300, w: 32, h: 48, dy: 0, jump: -12, grounded: false, facing: 'right' };
         let currentBoss = { ...stage.boss, startY: 190, y: 190, x: 650 };
         let projectiles = [];
+        let bossProjectiles = [];
+        let particles = [];
+        let playerInvincible = 0;
+        let knockbackDir = 0;
+        let screenShakeTime = 0;
         const gravity = 0.7;
 
         function loadStage(idx) {
@@ -233,13 +238,91 @@
             stage = STAGES[idx];
             titleEl.innerHTML = stage.title;
             canvas.style.borderColor = stage.env.accent;
-            currentBoss = { ...stage.boss, startY: 200, y: 200, x: 650 };
+            
+            if (idx === 0) {
+                currentBoss = { 
+                    ...stage.boss, 
+                    w: 100, 
+                    h: 120, 
+                    startY: 220, 
+                    y: 220, 
+                    x: 650, 
+                    chargeState: 'idle', 
+                    chargeTimer: 120, 
+                    shootTimer: 60, 
+                    chargeSpeed: 0
+                };
+            } else if (idx === 1) {
+                currentBoss = { 
+                    ...stage.boss, 
+                    w: 70, 
+                    h: 130, 
+                    startY: 210, 
+                    y: 210, 
+                    x: 650, 
+                    actionState: 'idle', 
+                    actionTimer: 60, 
+                    shootTimer: 30,
+                    dy: 0,
+                    grounded: true
+                };
+            } else if (idx === 2) {
+                currentBoss = { 
+                    ...stage.boss, 
+                    w: 70, 
+                    h: 100, 
+                    startY: 240, 
+                    y: 240, 
+                    x: 650, 
+                    actionState: 'idle', 
+                    actionTimer: 90, 
+                    shootTimer: 45
+                };
+            } else if (idx === 3) {
+                currentBoss = { 
+                    ...stage.boss, 
+                    w: 65, 
+                    h: 115, 
+                    startY: 225, 
+                    y: 225, 
+                    x: 650, 
+                    actionState: 'idle', 
+                    actionTimer: 100, 
+                    shootTimer: 50,
+                    grounded: true
+                };
+            } else if (idx === 4) {
+                currentBoss = { 
+                    ...stage.boss, 
+                    w: 80, 
+                    h: 140, 
+                    startY: 200, 
+                    y: 200, 
+                    x: 650, 
+                    actionState: 'idle', 
+                    actionTimer: 120, 
+                    shootTimer: 60,
+                    dy: 0,
+                    grounded: true
+                };
+            } else {
+                currentBoss = { ...stage.boss, startY: 200, y: 200, x: 650 };
+            }
+            
             player.x = 50; player.y = 300;
             projectiles = [];
+            bossProjectiles = [];
+            particles = [];
+            playerInvincible = 0;
+            knockbackDir = 0;
+            screenShakeTime = 0;
             gameState = 'PLAYING';
         }
 
         function drawMegaGaboX(ctx, p, colors) {
+            if (playerInvincible > 0 && Math.floor(playerInvincible / 4) % 2 === 0) {
+                return;
+            }
             ctx.save();
             ctx.translate(p.x + p.w/2, p.y + p.h/2);
             if (p.facing === 'left') ctx.scale(-1, 1);
@@ -273,6 +356,1150 @@
             }
         }
 
+        function drawBlizzardBuffalo(ctx, boss) {
+            ctx.save();
+            const bx = boss.x;
+            const by = boss.y;
+            const bw = boss.w;
+            const bh = boss.h;
+
+            const isPreparing = boss.chargeState === 'preparing';
+            const offsetX = isPreparing ? Math.sin(Date.now() / 20) * 3 : 0;
+            const offsetY = isPreparing ? Math.sin(Date.now() / 10) * 2 : 0;
+
+            ctx.translate(offsetX, offsetY);
+
+            const darkBlue = "#1D4ED8";
+            const lightBlue = "#60A5FA";
+            const iceWhite = "#E0F2FE";
+            const hornGold = "#EAB308";
+            const redEye = "#EF4444";
+            const darkMetal = "#1E293B";
+
+            // Draw shadow under boss
+            ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
+            ctx.fillRect(bx + 10, by + bh - 10, bw - 20, 10);
+
+            // 1. Back Hump & Back Armor (heavy plates)
+            ctx.fillStyle = lightBlue;
+            ctx.fillRect(bx + 40, by + 10, 50, 40); 
+            ctx.fillStyle = iceWhite;
+            ctx.fillRect(bx + 45, by + 5, 40, 8); 
+
+            ctx.fillStyle = darkMetal;
+            ctx.fillRect(bx + 75, by + 5, 10, 10);
+            ctx.fillRect(bx + 85, by + 15, 10, 10);
+
+            // 2. Main Body/Torso
+            ctx.fillStyle = darkBlue;
+            ctx.fillRect(bx + 30, by + 30, 55, 50); 
+            ctx.fillStyle = lightBlue;
+            ctx.fillRect(bx + 35, by + 40, 45, 30); 
+
+            ctx.fillStyle = hornGold;
+            ctx.fillRect(bx + 20, by + 35, 15, 30);
+            ctx.fillRect(bx + 25, by + 65, 20, 10);
+
+            // 3. Head & Visor
+            ctx.fillStyle = iceWhite;
+            ctx.fillRect(bx + 5, by + 25, 25, 30); 
+            ctx.fillStyle = darkBlue;
+            ctx.fillRect(bx + 0, by + 35, 10, 15); 
+            
+            ctx.fillStyle = redEye;
+            ctx.fillRect(bx + 8, by + 30, 12, 5);
+            ctx.fillStyle = "#FFF";
+            ctx.fillRect(bx + 16, by + 30, 4, 2);
+
+            // 4. Massive Golden Horns (Curved forward)
+            ctx.fillStyle = hornGold;
+            ctx.fillRect(bx + 15, by + 15, 12, 12);
+            ctx.fillRect(bx + 5, by + 5, 12, 12);
+            ctx.fillRect(bx - 5, by + 8, 12, 12);
+            ctx.fillRect(bx - 12, by + 16, 10, 12);
+            ctx.fillRect(bx - 15, by + 26, 8, 10); 
+
+            ctx.fillStyle = "#FEF08A"; 
+            ctx.fillRect(bx + 17, by + 17, 8, 4);
+            ctx.fillRect(bx + 7, by + 7, 8, 4);
+            ctx.fillRect(bx - 3, by + 10, 8, 4);
+
+            // 5. Legs & Hooves
+            ctx.fillStyle = darkBlue;
+            ctx.fillRect(bx + 25, by + 75, 20, 35);
+            ctx.fillStyle = hornGold;
+            ctx.fillRect(bx + 22, by + 105, 24, 15); 
+
+            ctx.fillStyle = darkMetal;
+            ctx.fillRect(bx + 45, by + 75, 16, 35);
+            ctx.fillStyle = "#CA8A04"; 
+            ctx.fillRect(bx + 43, by + 105, 18, 15);
+
+            ctx.fillStyle = darkBlue;
+            ctx.fillRect(bx + 65, by + 75, 20, 35);
+            ctx.fillStyle = hornGold;
+            ctx.fillRect(bx + 65, by + 105, 22, 15); 
+
+            ctx.fillStyle = darkMetal;
+            ctx.fillRect(bx + 78, by + 72, 16, 38);
+            ctx.fillStyle = "#CA8A04"; 
+            ctx.fillRect(bx + 78, by + 105, 16, 15);
+
+            ctx.fillStyle = lightBlue;
+            ctx.fillRect(bx + 88, by + 45, 10, 10);
+            ctx.fillStyle = iceWhite;
+            ctx.fillRect(bx + 94, by + 42, 6, 6);
+
+            ctx.fillStyle = "#FFF";
+            ctx.font = "8px 'Press Start 2P'";
+            ctx.fillText("RA-x3", bx + 40, by + 55);
+
+            ctx.restore();
+        }
+
+        function shootIceShard() {
+            bossProjectiles.push({
+                x: currentBoss.x,
+                y: currentBoss.y + 40,
+                vx: -6,
+                vy: 0,
+                w: 16,
+                h: 12,
+                type: 'ice'
+            });
+            for(let i=0; i<5; i++) {
+                particles.push({
+                    x: currentBoss.x,
+                    y: currentBoss.y + 40,
+                    vx: -3 - Math.random()*3,
+                    vy: -2 + Math.random()*4,
+                    size: 2 + Math.random()*2,
+                    color: "#93C5FD",
+                    life: 15
+                });
+            }
+        }
+
+        function updateBlizzardBuffalo() {
+            if (currentBoss.chargeState === 'idle') {
+                currentBoss.chargeTimer--;
+                currentBoss.y = currentBoss.startY + Math.sin(Date.now() / 200) * 4;
+
+                currentBoss.shootTimer--;
+                if (currentBoss.shootTimer <= 0) {
+                    shootIceShard();
+                    currentBoss.shootTimer = 150 + Math.random() * 100;
+                }
+
+                if (currentBoss.chargeTimer <= 0) {
+                    currentBoss.chargeState = 'preparing';
+                    currentBoss.chargeTimer = 60; 
+                }
+            } 
+            else if (currentBoss.chargeState === 'preparing') {
+                if (Math.random() < 0.2) {
+                    particles.push({
+                        x: currentBoss.x + 5,
+                        y: currentBoss.y + 40,
+                        vx: -1 - Math.random() * 2,
+                        vy: -0.5 + Math.random(),
+                        size: 4 + Math.random() * 4,
+                        color: "rgba(224, 242, 254, 0.6)",
+                        life: 30
+                    });
+                }
+                currentBoss.chargeTimer--;
+                if (currentBoss.chargeTimer <= 0) {
+                    currentBoss.chargeState = 'charging';
+                    currentBoss.chargeSpeed = -10; 
+                }
+            } 
+            else if (currentBoss.chargeState === 'charging') {
+                currentBoss.x += currentBoss.chargeSpeed;
+                if (Math.random() < 0.4) {
+                    particles.push({
+                        x: currentBoss.x + 20 + Math.random() * 60,
+                        y: currentBoss.y + currentBoss.h - 5,
+                        vx: 2 + Math.random() * 3,
+                        vy: -1 - Math.random() * 2,
+                        size: 3 + Math.random() * 3,
+                        color: "#93C5FD", 
+                        life: 20
+                    });
+                }
+
+                if (currentBoss.x <= 20) {
+                    currentBoss.x = 20;
+                    currentBoss.chargeState = 'returning';
+                    currentBoss.chargeSpeed = 3; 
+                    screenShakeTime = 20;
+                }
+            } 
+            else if (currentBoss.chargeState === 'returning') {
+                currentBoss.x += currentBoss.chargeSpeed;
+                if (currentBoss.x >= 650) {
+                    currentBoss.x = 650;
+                    currentBoss.chargeState = 'idle';
+                    currentBoss.chargeTimer = 180 + Math.random() * 120; 
+                }
+            }
+        }
+
+        function drawQueuedOrdersDragoon(ctx, boss) {
+            ctx.save();
+            const bx = boss.x;
+            const by = boss.y;
+            const bw = boss.w;
+            const bh = boss.h;
+
+            const isAttacking = boss.actionState === 'hadouken' || boss.actionState === 'shoryuken';
+            const isShoryuken = boss.actionState === 'shoryuken';
+            
+            ctx.translate(bx + bw/2, by + bh/2);
+            ctx.scale(-1, 1);
+
+            const cx = -bw/2;
+            const cy = -bh/2;
+
+            const dragoonRed = "#B91C1C";
+            const dragoonDarkRed = "#7F1D1D";
+            const goldYellow = "#FACC15";
+            const plateOrange = "#F97316";
+            const bodyGrey = "#334155";
+            const beadGreen = "#10B981";
+            const beadDarkGreen = "#047857";
+            const flameOrange = "#F97316";
+            const flameYellow = "#FBBF24";
+
+            if (boss.grounded) {
+                ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
+                ctx.fillRect(cx + 5, cy + bh - 10, bw - 10, 10);
+            }
+
+            // 1. Fiery Wings
+            ctx.fillStyle = flameOrange;
+            ctx.fillRect(cx + 40, cy + 20, 25, 12);
+            ctx.fillRect(cx + 45, cy + 8, 20, 12);
+            ctx.fillStyle = flameYellow;
+            ctx.fillRect(cx + 50, cy + 14, 15, 12);
+
+            // 2. Tail
+            ctx.fillStyle = dragoonRed;
+            ctx.fillRect(cx + 40, cy + 80, 20, 12);
+            ctx.fillRect(cx + 50, cy + 72, 16, 12);
+            ctx.fillStyle = flameOrange;
+            ctx.fillRect(cx + 64, cy + 64, 10, 10);
+            ctx.fillStyle = flameYellow;
+            ctx.fillRect(cx + 70, cy + 60, 6, 6);
+
+            // 3. Body & Torso
+            ctx.fillStyle = bodyGrey;
+            ctx.fillRect(cx + 15, cy + 40, 30, 45); 
+            
+            ctx.fillStyle = dragoonRed;
+            ctx.fillRect(cx + 12, cy + 45, 12, 30);
+            ctx.fillRect(cx + 24, cy + 50, 15, 25);
+
+            ctx.fillStyle = goldYellow;
+            ctx.fillRect(cx + 32, cy + 36, 12, 12);
+
+            // 4. Green Beads
+            ctx.fillStyle = beadGreen;
+            ctx.fillRect(cx + 10, cy + 36, 6, 6);
+            ctx.fillRect(cx + 14, cy + 34, 6, 6);
+            ctx.fillRect(cx + 20, cy + 33, 6, 6);
+            ctx.fillRect(cx + 26, cy + 35, 6, 6);
+            ctx.fillStyle = beadDarkGreen;
+            ctx.fillRect(cx + 12, cy + 37, 2, 2);
+            ctx.fillRect(cx + 16, cy + 35, 2, 2);
+            ctx.fillRect(cx + 22, cy + 34, 2, 2);
+
+            // 5. Head & Snout
+            ctx.fillStyle = dragoonRed;
+            ctx.fillRect(cx + 4, cy + 15, 22, 22); 
+            ctx.fillRect(cx - 2, cy + 22, 10, 12); 
+            
+            ctx.fillStyle = goldYellow;
+            ctx.fillRect(cx + 2, cy + 32, 10, 5);
+
+            ctx.fillStyle = plateOrange;
+            ctx.fillRect(cx + 18, cy + 8, 12, 8);
+            ctx.fillRect(cx + 24, cy + 2, 8, 8);
+
+            ctx.fillStyle = "#A7F3D0";
+            ctx.fillRect(cx + 4, cy + 20, 6, 4);
+
+            // 6. Arms & Claws
+            if (isShoryuken) {
+                ctx.fillStyle = dragoonRed;
+                ctx.fillRect(cx + 10, cy + 10, 10, 30); 
+                ctx.fillStyle = goldYellow;
+                ctx.fillRect(cx + 8, cy + 4, 14, 10); 
+                ctx.fillStyle = flameOrange;
+                ctx.fillRect(cx + 6, cy - 8, 18, 12);
+                ctx.fillStyle = flameYellow;
+                ctx.fillRect(cx + 10, cy - 14, 10, 8);
+            } else if (boss.actionState === 'hadouken') {
+                ctx.fillStyle = dragoonRed;
+                ctx.fillRect(cx - 10, cy + 42, 25, 10); 
+                ctx.fillStyle = goldYellow;
+                ctx.fillRect(cx - 15, cy + 40, 10, 14); 
+            } else {
+                ctx.fillStyle = dragoonRed;
+                ctx.fillRect(cx + 8, cy + 46, 8, 20);
+                ctx.fillStyle = goldYellow;
+                ctx.fillRect(cx + 6, cy + 62, 10, 8);
+            }
+
+            // 7. Legs & Feet
+            ctx.fillStyle = dragoonDarkRed;
+            ctx.fillRect(cx + 26, cy + 80, 14, 30);
+            ctx.fillStyle = bodyGrey;
+            ctx.fillRect(cx + 24, cy + 110, 18, 10); 
+
+            ctx.fillStyle = dragoonRed;
+            ctx.fillRect(cx + 12, cy + 80, 15, 30);
+            ctx.fillStyle = goldYellow;
+            ctx.fillRect(cx + 8, cy + 110, 20, 10); 
+
+            ctx.restore();
+        }
+
+        function shootHadouken() {
+            bossProjectiles.push({
+                x: currentBoss.x - 20,
+                y: currentBoss.y + 40,
+                vx: -8,
+                vy: 0,
+                w: 24,
+                h: 18,
+                type: 'fireball'
+            });
+
+            for(let i=0; i<8; i++) {
+                particles.push({
+                    x: currentBoss.x - 10,
+                    y: currentBoss.y + 50,
+                    vx: -4 - Math.random()*4,
+                    vy: -2 + Math.random()*4,
+                    size: 3 + Math.random()*3,
+                    color: "#F97316",
+                    life: 20
+                });
+            }
+        }
+
+        function updateQueuedOrdersDragoon() {
+            if (Math.random() < 0.15) {
+                particles.push({
+                    x: currentBoss.x + Math.random() * currentBoss.w,
+                    y: currentBoss.y + currentBoss.h - 5,
+                    vx: -1 + Math.random() * 2,
+                    vy: -1 - Math.random() * 2,
+                    size: 2 + Math.random() * 3,
+                    color: Math.random() < 0.5 ? "#F97316" : "#FACC15",
+                    life: 25
+                });
+            }
+
+            if (!currentBoss.grounded) {
+                currentBoss.dy += gravity;
+                currentBoss.y += currentBoss.dy;
+
+                if (currentBoss.y >= 210) {
+                    currentBoss.y = 210;
+                    currentBoss.dy = 0;
+                    currentBoss.grounded = true;
+                    screenShakeTime = 10; 
+                    
+                    for (let i = 0; i < 8; i++) {
+                        particles.push({
+                            x: currentBoss.x + currentBoss.w / 2,
+                            y: 335,
+                            vx: -3 + Math.random() * 6,
+                            vy: -2 - Math.random() * 3,
+                            size: 3 + Math.random() * 3,
+                            color: "#EF4444",
+                            life: 20
+                        });
+                    }
+
+                    currentBoss.actionState = 'idle';
+                    currentBoss.actionTimer = 60 + Math.random() * 60;
+                }
+            }
+
+            if (currentBoss.grounded) {
+                currentBoss.actionTimer--;
+
+                if (currentBoss.actionState === 'idle') {
+                    currentBoss.x = 650 + Math.sin(Date.now() / 400) * 15;
+
+                    if (currentBoss.actionTimer <= 0) {
+                        const attackChoice = Math.random() < 0.55 ? 'hadouken' : 'shoryuken';
+                        
+                        if (attackChoice === 'hadouken') {
+                            currentBoss.actionState = 'hadouken_charge';
+                            currentBoss.actionTimer = 40; 
+                        } else {
+                            currentBoss.actionState = 'shoryuken_prep';
+                            currentBoss.actionTimer = 30; 
+                        }
+                    }
+                } 
+                else if (currentBoss.actionState === 'hadouken_charge') {
+                    if (Math.random() < 0.3) {
+                        particles.push({
+                            x: currentBoss.x - 10,
+                            y: currentBoss.y + 50,
+                            vx: -2 - Math.random() * 2,
+                            vy: -1 + Math.random() * 2,
+                            size: 3 + Math.random() * 3,
+                            color: "#FACC15",
+                            life: 15
+                        });
+                    }
+
+                    if (currentBoss.actionTimer <= 0) {
+                        currentBoss.actionState = 'hadouken';
+                        currentBoss.actionTimer = 30; 
+                        shootHadouken();
+                    }
+                }
+                else if (currentBoss.actionState === 'hadouken') {
+                    if (currentBoss.actionTimer <= 0) {
+                        currentBoss.actionState = 'idle';
+                        currentBoss.actionTimer = 80 + Math.random() * 60;
+                    }
+                }
+                else if (currentBoss.actionState === 'shoryuken_prep') {
+                    currentBoss.y = 220;
+                    if (currentBoss.actionTimer <= 0) {
+                        currentBoss.actionState = 'shoryuken';
+                        currentBoss.grounded = false;
+                        currentBoss.dy = -15; 
+                        currentBoss.y = 200;
+                    }
+                }
+            } else {
+                if (currentBoss.actionState === 'shoryuken') {
+                    if (Math.random() < 0.5) {
+                        particles.push({
+                            x: currentBoss.x + 10 + Math.random() * 20,
+                            y: currentBoss.y + 10,
+                            vx: -1 + Math.random() * 2,
+                            vy: 2 + Math.random() * 2,
+                            size: 4 + Math.random() * 4,
+                            color: Math.random() < 0.5 ? "#EF4444" : "#FBBF24",
+                            life: 25
+                        });
+                    }
+                }
+            }
+        }
+
+        function drawStormEagle(ctx, boss) {
+            ctx.save();
+            const bx = boss.x;
+            const by = boss.y;
+            const bw = boss.w;
+            const bh = boss.h;
+
+            ctx.translate(bx + bw/2, by + bh/2);
+            ctx.scale(-1, 1); 
+
+            const cx = -bw/2;
+            const cy = -bh/2;
+
+            const steelBlue = "#3B82F6";
+            const goldYellow = "#FACC15";
+            const whiteGray = "#E2E8F0";
+            const darkSlate = "#1E293B";
+            const gemGreen = "#10B981";
+
+            const isGust = boss.actionState === 'gust';
+            const flapSpeed = isGust ? 40 : 150;
+            const flapAngle = Math.sin(Date.now() / flapSpeed) * 20;
+
+            ctx.save();
+            ctx.translate(cx + 35, cy + 30);
+            ctx.rotate(-flapAngle * Math.PI / 180);
+            ctx.fillStyle = steelBlue;
+            ctx.fillRect(0, -30, 15, 40);
+            ctx.fillStyle = whiteGray;
+            ctx.fillRect(5, -25, 8, 30);
+            ctx.restore();
+
+            ctx.fillStyle = darkSlate;
+            ctx.fillRect(cx + 40, cy + 65, 12, 20);
+            ctx.fillRect(cx + 45, cy + 70, 10, 18);
+
+            ctx.fillStyle = steelBlue;
+            ctx.fillRect(cx + 15, cy + 35, 26, 35); 
+            ctx.fillStyle = whiteGray;
+            ctx.fillRect(cx + 18, cy + 40, 20, 20); 
+
+            ctx.fillStyle = steelBlue;
+            ctx.fillRect(cx + 25, cy + 70, 10, 18);
+            ctx.fillRect(cx + 15, cy + 70, 8, 18);
+            ctx.fillStyle = goldYellow;
+            ctx.fillRect(cx + 22, cy + 88, 14, 8);
+            ctx.fillRect(cx + 12, cy + 88, 12, 8);
+
+            ctx.fillStyle = steelBlue;
+            ctx.fillRect(cx + 6, cy + 12, 18, 18); 
+            ctx.fillStyle = goldYellow;
+            ctx.fillRect(cx - 4, cy + 18, 10, 10); 
+            ctx.fillStyle = gemGreen;
+            ctx.fillRect(cx + 12, cy + 10, 4, 4);
+            ctx.fillStyle = "#FFF";
+            ctx.fillRect(cx + 8, cy + 16, 3, 3);
+
+            ctx.save();
+            ctx.translate(cx + 25, cy + 40);
+            ctx.rotate(flapAngle * Math.PI / 180);
+            ctx.fillStyle = steelBlue;
+            ctx.fillRect(-5, -40, 22, 50); 
+            ctx.fillStyle = whiteGray;
+            ctx.fillRect(0, -35, 8, 40);
+            ctx.fillRect(6, -30, 8, 35);
+            ctx.fillRect(12, -20, 6, 25);
+            ctx.restore();
+
+            ctx.restore();
+        }
+
+        function updateStormEagle() {
+            if (currentBoss.actionState === 'gust') {
+                if (Math.random() < 0.3) {
+                    particles.push({
+                        x: currentBoss.x,
+                        y: currentBoss.y + 20 + Math.random() * 60,
+                        vx: -8 - Math.random() * 4,
+                        vy: -0.5 + Math.random(),
+                        size: 3 + Math.random() * 4,
+                        color: "rgba(226, 232, 240, 0.4)",
+                        life: 40
+                    });
+                }
+            }
+
+            currentBoss.actionTimer--;
+
+            if (currentBoss.actionState === 'idle') {
+                currentBoss.y = currentBoss.startY + Math.sin(Date.now() / 200) * 8;
+
+                currentBoss.shootTimer--;
+                if (currentBoss.shootTimer <= 0) {
+                    shootWindVortex();
+                    currentBoss.shootTimer = 160 + Math.random() * 80;
+                }
+
+                if (currentBoss.actionTimer <= 0) {
+                    if (Math.random() < 0.5) {
+                        currentBoss.actionState = 'gust';
+                        currentBoss.actionTimer = 100; 
+                    } else {
+                        currentBoss.actionState = 'dive_up';
+                        currentBoss.actionTimer = 40;
+                    }
+                }
+            }
+            else if (currentBoss.actionState === 'gust') {
+                if (player.x > 30) {
+                    player.x -= 1.5; 
+                }
+                currentBoss.y = currentBoss.startY + Math.sin(Date.now() / 100) * 5;
+
+                if (currentBoss.actionTimer <= 0) {
+                    currentBoss.actionState = 'idle';
+                    currentBoss.actionTimer = 120 + Math.random() * 60;
+                }
+            }
+            else if (currentBoss.actionState === 'dive_up') {
+                currentBoss.y -= 4;
+                currentBoss.x += 1;
+                if (currentBoss.actionTimer <= 0) {
+                    currentBoss.actionState = 'dive_down';
+                    currentBoss.actionTimer = 50;
+                }
+            }
+            else if (currentBoss.actionState === 'dive_down') {
+                currentBoss.x -= 10;
+                currentBoss.y += 6;
+                if (Math.random() < 0.4) {
+                    particles.push({
+                        x: currentBoss.x + 35,
+                        y: currentBoss.y + 20,
+                        vx: 1 + Math.random() * 2,
+                        vy: -1 - Math.random() * 2,
+                        size: 2 + Math.random() * 3,
+                        color: "#E2E8F0",
+                        life: 20
+                    });
+                }
+
+                if (currentBoss.x <= 50 || currentBoss.y >= 260) {
+                    currentBoss.actionState = 'dive_return';
+                    currentBoss.actionTimer = 60;
+                }
+            }
+            else if (currentBoss.actionState === 'dive_return') {
+                const dx = 650 - currentBoss.x;
+                const dy = currentBoss.startY - currentBoss.y;
+                currentBoss.x += dx / 15;
+                currentBoss.y += dy / 15;
+
+                if (currentBoss.actionTimer <= 0 || (Math.abs(dx) < 5 && Math.abs(dy) < 5)) {
+                    currentBoss.x = 650;
+                    currentBoss.y = currentBoss.startY;
+                    currentBoss.actionState = 'idle';
+                    currentBoss.actionTimer = 90 + Math.random() * 90;
+                }
+            }
+        }
+
+        function shootWindVortex() {
+            bossProjectiles.push({
+                x: currentBoss.x - 10,
+                y: currentBoss.y + 30,
+                vx: -6,
+                vy: 0,
+                w: 24,
+                h: 24,
+                type: 'vortex'
+            });
+        }
+
+        function drawVile(ctx, boss) {
+            ctx.save();
+            const bx = boss.x;
+            const by = boss.y;
+            const bw = boss.w;
+            const bh = boss.h;
+
+            ctx.translate(bx + bw/2, by + bh/2);
+            ctx.scale(-1, 1); 
+
+            const cx = -bw/2;
+            const cy = -bh/2;
+
+            const vilePurple = "#7C3AED";
+            const vileDarkPurple = "#4C1D95";
+            const goldYellow = "#FACC15";
+            const metalGrey = "#64748B";
+            const redVisor = "#EF4444";
+
+            ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
+            ctx.fillRect(cx + 5, cy + bh - 10, bw - 10, 10);
+
+            ctx.fillStyle = metalGrey;
+            ctx.fillRect(cx + 10, cy + 12, 28, 10); 
+            ctx.fillStyle = goldYellow;
+            ctx.fillRect(cx + 8, cy + 10, 6, 14); 
+            ctx.fillStyle = "#000";
+            ctx.fillRect(cx + 8, cy + 14, 2, 6); 
+
+            ctx.fillStyle = vileDarkPurple;
+            ctx.fillRect(cx + 15, cy + 40, 25, 45); 
+            ctx.fillStyle = vilePurple;
+            ctx.fillRect(cx + 12, cy + 45, 12, 30); 
+            ctx.fillStyle = goldYellow;
+            ctx.fillRect(cx + 14, cy + 50, 8, 12); 
+
+            ctx.fillStyle = metalGrey;
+            ctx.fillRect(cx + 25, cy + 46, 12, 20); 
+            
+            ctx.fillStyle = vilePurple;
+            const isShooting = boss.actionState === 'shooting';
+            if (isShooting) {
+                ctx.fillRect(cx - 8, cy + 44, 22, 10); 
+                ctx.fillStyle = goldYellow;
+                ctx.fillRect(cx - 12, cy + 42, 6, 14); 
+            } else {
+                ctx.fillRect(cx + 6, cy + 46, 10, 22); 
+                ctx.fillStyle = goldYellow;
+                ctx.fillRect(cx + 4, cy + 68, 12, 8); 
+            }
+
+            ctx.fillStyle = vilePurple;
+            ctx.fillRect(cx + 8, cy + 20, 18, 20); 
+            ctx.fillStyle = metalGrey;
+            ctx.fillRect(cx + 6, cy + 28, 22, 4); 
+            ctx.fillStyle = redVisor;
+            ctx.fillRect(cx + 7, cy + 24, 12, 4); 
+
+            ctx.fillStyle = vileDarkPurple;
+            ctx.fillRect(cx + 22, cy + 85, 12, 30); 
+            ctx.fillStyle = vilePurple;
+            ctx.fillRect(cx + 10, cy + 85, 12, 30); 
+            
+            ctx.fillStyle = goldYellow;
+            ctx.fillRect(cx + 8, cy + 90, 8, 8);
+
+            ctx.fillStyle = metalGrey;
+            ctx.fillRect(cx + 20, cy + 110, 16, 7);
+            ctx.fillRect(cx + 6, cy + 110, 16, 7);
+
+            ctx.restore();
+        }
+
+        function updateVile() {
+            currentBoss.actionTimer--;
+
+            if (currentBoss.actionState === 'idle') {
+                currentBoss.x = 650 + Math.sin(Date.now() / 500) * 20;
+
+                currentBoss.shootTimer--;
+                if (currentBoss.shootTimer <= 0) {
+                    if (Math.random() < 0.6) {
+                        currentBoss.actionState = 'shooting';
+                        currentBoss.actionTimer = 45; 
+                        shootShoulderPlasma();
+                    } else {
+                        currentBoss.actionState = 'bombing';
+                        currentBoss.actionTimer = 30;
+                        throwKneeBomb();
+                    }
+                    currentBoss.shootTimer = 120 + Math.random() * 80;
+                }
+            }
+            else if (currentBoss.actionState === 'shooting') {
+                if (currentBoss.actionTimer === 30 || currentBoss.actionTimer === 15) {
+                    shootShoulderPlasma(); 
+                }
+                if (currentBoss.actionTimer <= 0) {
+                    currentBoss.actionState = 'idle';
+                }
+            }
+            else if (currentBoss.actionState === 'bombing') {
+                if (currentBoss.actionTimer <= 0) {
+                    currentBoss.actionState = 'idle';
+                }
+            }
+        }
+
+        function shootShoulderPlasma() {
+            bossProjectiles.push({
+                x: currentBoss.x - 10,
+                y: currentBoss.y + 20,
+                vx: -8,
+                vy: 0,
+                w: 14,
+                h: 10,
+                type: 'plasma'
+            });
+            for (let i = 0; i < 4; i++) {
+                particles.push({
+                    x: currentBoss.x,
+                    y: currentBoss.y + 22,
+                    vx: -2 - Math.random() * 3,
+                    vy: -1 + Math.random() * 2,
+                    size: 2 + Math.random() * 2,
+                    color: "#A78BFA",
+                    life: 12
+                });
+            }
+        }
+
+        function throwKneeBomb() {
+            bossProjectiles.push({
+                x: currentBoss.x - 5,
+                y: currentBoss.y + 90,
+                vx: -5,
+                vy: -3, 
+                w: 12,
+                h: 12,
+                type: 'kneebomb'
+            });
+        }
+
+        function drawSigmaMMX2(ctx, boss) {
+            ctx.save();
+            const bx = boss.x;
+            const by = boss.y;
+            const bw = boss.w;
+            const bh = boss.h;
+
+            ctx.translate(bx + bw/2, by + bh/2);
+            ctx.scale(-1, 1); 
+
+            const cx = -bw/2;
+            const cy = -bh/2;
+
+            const sigmaGreen = "#059669";
+            const sigmaDarkGreen = "#064E3B";
+            const purpleCape = "#7C3AED";
+            const purpleDarkCape = "#4C1D95";
+            const goldYellow = "#FACC15";
+            const metalGrey = "#475569";
+            const energyClaw = "#EF4444";
+
+            ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
+            ctx.fillRect(cx + 5, cy + bh - 10, bw - 10, 10);
+
+            ctx.fillStyle = purpleDarkCape;
+            ctx.fillRect(cx + 35, cy + 30, 20, bh - 40);
+            ctx.fillStyle = purpleCape;
+            ctx.fillRect(cx + 38, cy + 35, 12, bh - 50);
+
+            ctx.fillStyle = sigmaDarkGreen;
+            ctx.fillRect(cx + 15, cy + 35, 28, 55); 
+            
+            ctx.fillStyle = sigmaGreen;
+            ctx.fillRect(cx + 8, cy + 32, 14, 18); 
+            ctx.fillRect(cx + 32, cy + 30, 14, 18); 
+            ctx.fillStyle = goldYellow;
+            ctx.fillRect(cx + 10, cy + 30, 10, 3); 
+            ctx.fillRect(cx + 34, cy + 28, 10, 3);
+
+            ctx.fillStyle = "#F3F4F6"; 
+            ctx.fillRect(cx + 16, cy + 12, 18, 20); 
+            ctx.fillStyle = "#E5E7EB";
+            ctx.fillRect(cx + 20, cy + 28, 10, 4); 
+
+            ctx.fillStyle = "#EF4444";
+            ctx.fillRect(cx + 21, cy + 14, 2, 14); 
+            ctx.fillRect(cx + 29, cy + 14, 2, 14); 
+
+            ctx.fillStyle = "#EF4444";
+            ctx.fillRect(cx + 22, cy + 20, 2, 2);
+            ctx.fillRect(cx + 28, cy + 20, 2, 2);
+
+            const isDashing = boss.actionState === 'dashing';
+            ctx.fillStyle = metalGrey;
+            ctx.fillRect(cx + 26, cy + 50, 12, 25); 
+
+            ctx.fillStyle = sigmaGreen;
+            if (isDashing) {
+                ctx.fillRect(cx - 10, cy + 42, 28, 12); 
+                ctx.fillStyle = "#F59E0B"; 
+                ctx.fillRect(cx - 15, cy + 40, 6, 16);
+                
+                ctx.fillStyle = energyClaw;
+                ctx.fillRect(cx - 30, cy + 40, 15, 2);
+                ctx.fillRect(cx - 28, cy + 47, 13, 2);
+                ctx.fillRect(cx - 26, cy + 54, 11, 2);
+            } else {
+                ctx.fillRect(cx + 8, cy + 50, 10, 25); 
+                ctx.fillStyle = "#FBBF24"; 
+                ctx.fillRect(cx + 6, cy + 75, 14, 6);
+            }
+
+            ctx.fillStyle = sigmaDarkGreen;
+            ctx.fillRect(cx + 24, cy + 90, 14, 30); 
+            ctx.fillStyle = sigmaGreen;
+            ctx.fillRect(cx + 12, cy + 90, 14, 30); 
+            ctx.fillStyle = goldYellow;
+            ctx.fillRect(cx + 10, cy + 115, 18, 10); 
+            ctx.fillRect(cx + 22, cy + 115, 18, 10);
+
+            ctx.restore();
+        }
+
+        function updateSigmaMMX2() {
+            if (Math.random() < 0.1) {
+                particles.push({
+                    x: currentBoss.x + Math.random() * currentBoss.w,
+                    y: currentBoss.y + Math.random() * currentBoss.h,
+                    vx: -1 + Math.random() * 2,
+                    vy: -1 + Math.random() * 2,
+                    size: 2 + Math.random() * 2,
+                    color: "#34D399",
+                    life: 15
+                });
+            }
+
+            currentBoss.actionTimer--;
+
+            if (currentBoss.actionState === 'idle') {
+                currentBoss.x = 650 + Math.sin(Date.now() / 450) * 10;
+
+                currentBoss.shootTimer--;
+                if (currentBoss.shootTimer <= 0) {
+                    const attackChoice = Math.random() < 0.5 ? 'dashing' : 'shooting';
+                    if (attackChoice === 'dashing') {
+                        currentBoss.actionState = 'dash_prep';
+                        currentBoss.actionTimer = 30; 
+                    } else {
+                        currentBoss.actionState = 'shooting';
+                        currentBoss.actionTimer = 40;
+                        shootElectricSpheres();
+                    }
+                    currentBoss.shootTimer = 140 + Math.random() * 80;
+                }
+            }
+            else if (currentBoss.actionState === 'dash_prep') {
+                if (Math.random() < 0.4) {
+                    particles.push({
+                        x: currentBoss.x + Math.random() * currentBoss.w,
+                        y: currentBoss.y + Math.random() * currentBoss.h,
+                        vx: -2 + Math.random() * 4,
+                        vy: -2 + Math.random() * 4,
+                        size: 3 + Math.random() * 3,
+                        color: "#34D399",
+                        life: 10
+                    });
+                }
+                if (currentBoss.actionTimer <= 0) {
+                    currentBoss.actionState = 'dashing';
+                    currentBoss.actionTimer = 40; 
+                }
+            }
+            else if (currentBoss.actionState === 'dashing') {
+                currentBoss.x -= 12;
+
+                particles.push({
+                    x: currentBoss.x - 10,
+                    y: currentBoss.y + 70 + Math.random() * 30,
+                    vx: 2 + Math.random() * 3,
+                    vy: -1 - Math.random() * 2,
+                    size: 3 + Math.random() * 3,
+                    color: "#EF4444",
+                    life: 15
+                });
+
+                if (currentBoss.x <= 30) {
+                    currentBoss.x = 30;
+                    currentBoss.actionState = 'dash_return';
+                    currentBoss.actionTimer = 50;
+                    screenShakeTime = 15;
+                }
+            }
+            else if (currentBoss.actionState === 'dash_return') {
+                const dx = 650 - currentBoss.x;
+                currentBoss.x += dx / 12;
+                if (currentBoss.actionTimer <= 0 || Math.abs(dx) < 5) {
+                    currentBoss.x = 650;
+                    currentBoss.actionState = 'idle';
+                    currentBoss.actionTimer = 90 + Math.random() * 90;
+                }
+            }
+            else if (currentBoss.actionState === 'shooting') {
+                if (currentBoss.actionTimer <= 0) {
+                    currentBoss.actionState = 'idle';
+                }
+            }
+        }
+
+        function shootElectricSpheres() {
+            bossProjectiles.push({
+                x: currentBoss.x - 20,
+                y: currentBoss.y + 40,
+                vx: -5,
+                vy: 0.5,
+                w: 16,
+                h: 16,
+                type: 'electrosphere'
+            });
+
+            bossProjectiles.push({
+                x: currentBoss.x - 20,
+                y: currentBoss.y + 80,
+                vx: -6,
+                vy: -0.5,
+                w: 16,
+                h: 16,
+                type: 'electrosphere'
+            });
+        }
+
+        function updateParticles() {
+            for (let i = particles.length - 1; i >= 0; i--) {
+                let p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life--;
+                if (p.life <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
+        }
+
+        function drawParticles(ctx) {
+            particles.forEach(p => {
+                ctx.fillStyle = p.color;
+                ctx.fillRect(p.x, p.y, p.size, p.size);
+            });
+        }
+
+        function updateBossProjectiles() {
+            for (let i = bossProjectiles.length - 1; i >= 0; i--) {
+                let bp = bossProjectiles[i];
+
+                if (bp.type === 'kneebomb') {
+                    if (!bp.gravityVal) bp.gravityVal = 0.25;
+                    if (!bp.dy) bp.dy = -4;
+                    bp.dy += bp.gravityVal;
+                    bp.y += bp.dy;
+                    bp.x += bp.vx;
+
+                    if (bp.y >= 328) {
+                        bp.y = 328;
+                        bp.type = 'firepillar';
+                        bp.vx = 0;
+                        bp.vy = 0;
+                        bp.w = 20;
+                        bp.h = 60;
+                        bp.y = 280; 
+                        bp.life = 45; 
+                        screenShakeTime = Math.max(screenShakeTime, 4);
+                        
+                        for (let k = 0; k < 6; k++) {
+                            particles.push({
+                                x: bp.x,
+                                y: 335,
+                                vx: -2 + Math.random() * 4,
+                                vy: -3 - Math.random() * 3,
+                                size: 3 + Math.random() * 3,
+                                color: "#EF4444",
+                                life: 15
+                            });
+                        }
+                    }
+                } 
+                else if (bp.type === 'firepillar') {
+                    bp.life--;
+                    if (Math.random() < 0.4) {
+                        particles.push({
+                            x: bp.x + Math.random() * bp.w,
+                            y: bp.y + Math.random() * bp.h,
+                            vx: -0.5 + Math.random(),
+                            vy: -1 - Math.random() * 2,
+                            size: 2 + Math.random() * 2,
+                            color: "#EF4444",
+                            life: 15
+                        });
+                    }
+                    if (bp.life <= 0) {
+                        bossProjectiles.splice(i, 1);
+                        continue;
+                    }
+                } 
+                else {
+                    bp.x += bp.vx;
+                    bp.y += bp.vy;
+                    if (bp.type === 'vortex') {
+                        bp.y += Math.sin(Date.now() / 80) * 2;
+                    }
+                }
+
+                if (playerInvincible <= 0 && 
+                    bp.x < player.x + player.w && 
+                    bp.x + bp.w > player.x && 
+                    bp.y < player.y + player.h && 
+                    bp.y + bp.h > player.y) {
+                    
+                    damagePlayer();
+                    if (bp.type !== 'firepillar') {
+                        bossProjectiles.splice(i, 1);
+                    }
+                } else if ((bp.x < -50 || bp.x > canvas.width + 50) && bp.type !== 'firepillar') {
+                    bossProjectiles.splice(i, 1);
+                }
+            }
+        }
+
+        function drawBossProjectiles(ctx) {
+            bossProjectiles.forEach(bp => {
+                if (bp.type === 'ice') {
+                    ctx.fillStyle = "#93C5FD"; 
+                    ctx.fillRect(bp.x, bp.y + 4, bp.w, 4);
+                    ctx.fillRect(bp.x + 4, bp.y, bp.w - 8, bp.h);
+                    ctx.fillStyle = "#E0F2FE"; 
+                    ctx.fillRect(bp.x + 4, bp.y + 4, bp.w - 8, 4);
+                } else if (bp.type === 'fireball') {
+                    ctx.fillStyle = "#EF4444"; 
+                    ctx.fillRect(bp.x, bp.y, bp.w, bp.h);
+                    ctx.fillStyle = "#F59E0B"; 
+                    ctx.fillRect(bp.x + 4, bp.y + 2, bp.w - 8, bp.h - 4);
+                    ctx.fillStyle = "#FDE047"; 
+                    ctx.fillRect(bp.x + 8, bp.y + 5, bp.w - 14, bp.h - 10);
+
+                    if (Math.random() < 0.3) {
+                        particles.push({
+                            x: bp.x + bp.w,
+                            y: bp.y + Math.random() * bp.h,
+                            vx: 1 + Math.random() * 2,
+                            vy: -0.5 + Math.random(),
+                            size: 2 + Math.random() * 2,
+                            color: "#EF4444",
+                            life: 10
+                        });
+                    }
+                } else if (bp.type === 'vortex') {
+                    ctx.fillStyle = "#94A3B8";
+                    ctx.fillRect(bp.x + 4, bp.y, bp.w - 8, bp.h);
+                    ctx.fillRect(bp.x, bp.y + 4, bp.w, bp.h - 8);
+                    ctx.fillStyle = "#F1F5F9";
+                    ctx.fillRect(bp.x + 6, bp.y + 4, bp.w - 12, bp.h - 8);
+                } else if (bp.type === 'plasma') {
+                    ctx.fillStyle = "#7C3AED";
+                    ctx.fillRect(bp.x, bp.y, bp.w, bp.h);
+                    ctx.fillStyle = "#A78BFA";
+                    ctx.fillRect(bp.x + 2, bp.y + 2, bp.w - 4, bp.h - 4);
+                    ctx.fillStyle = "#FFF";
+                    ctx.fillRect(bp.x + 5, bp.y + 4, bp.w - 10, bp.h - 8);
+                } else if (bp.type === 'kneebomb') {
+                    ctx.fillStyle = "#7C3AED";
+                    ctx.fillRect(bp.x, bp.y, bp.w, bp.h);
+                    ctx.fillStyle = "#FACC15";
+                    ctx.fillRect(bp.x + 3, bp.y + 2, bp.w - 6, bp.h - 4);
+                } else if (bp.type === 'firepillar') {
+                    ctx.fillStyle = "#EF4444";
+                    ctx.fillRect(bp.x, bp.y, bp.w, bp.h);
+                    ctx.fillStyle = "#F59E0B";
+                    ctx.fillRect(bp.x + 4, bp.y + 10, bp.w - 8, bp.h - 10);
+                    ctx.fillStyle = "#FDE047";
+                    ctx.fillRect(bp.x + 7, bp.y + 20, bp.w - 14, bp.h - 20);
+                } else if (bp.type === 'electrosphere') {
+                    ctx.fillStyle = "#10B981";
+                    ctx.fillRect(bp.x, bp.y, bp.w, bp.h);
+                    ctx.fillStyle = "#34D399";
+                    ctx.fillRect(bp.x + 2, bp.y + 2, bp.w - 4, bp.h - 4);
+                    ctx.fillStyle = "#A7F3D0";
+                    ctx.fillRect(bp.x + 5, bp.y + 5, bp.w - 10, bp.h - 10);
+                }
+            });
+        }
+
+        function damagePlayer() {
+            playerInvincible = 45; 
+            screenShakeTime = 10;
+            knockbackDir = -1;
+            player.dy = -4; 
+            player.grounded = false;
+
+            for (let i = 0; i < 8; i++) {
+                particles.push({
+                    x: player.x + player.w/2,
+                    y: player.y + player.h/2,
+                    vx: -4 + Math.random() * 8,
+                    vy: -4 + Math.random() * 8,
+                    size: 3 + Math.random() * 3,
+                    color: "#EF4444",
+                    life: 20
+                });
+            }
+        }
+
+        function triggerDefeatExplosion(cx, cy, color = "#E0F2FE") {
+            for (let angle = 0; angle < Math.PI * 2; angle += Math.PI / 4) {
+                for (let speed = 2; speed <= 6; speed += 2) {
+                    particles.push({
+                        x: cx,
+                        y: cy,
+                        vx: Math.cos(angle) * speed,
+                        vy: Math.sin(angle) * speed,
+                        size: 6 + Math.random() * 4,
+                        color: color, 
+                        life: 40
+                    });
+                }
+            }
+            screenShakeTime = 30;
+        }
+
         function update() {
             if (gameState === 'INTRO') {
                 if (keys['Enter']) { keys['Enter'] = false; loadStage(0); }
@@ -284,8 +1511,14 @@
             }
             if (gameState === 'END') return;
 
-            if (keys['KeyA']) { player.x -= 6; player.facing = 'left'; }
-            if (keys['KeyD']) { player.x += 6; player.facing = 'right'; }
+            if (playerInvincible > 0) playerInvincible--;
+
+            if (playerInvincible > 30) {
+                player.x += knockbackDir * 5;
+            } else {
+                if (keys['KeyA']) { player.x -= 6; player.facing = 'left'; }
+                if (keys['KeyD']) { player.x += 6; player.facing = 'right'; }
+            }
             if ((keys['KeyW'] || keys['Space']) && player.grounded) { player.dy = player.jump; player.grounded = false; }
 
             player.dy += gravity; player.y += player.dy;
@@ -299,7 +1532,64 @@
                 }
             }
 
-            currentBoss.y = currentBoss.startY + Math.sin(Date.now() / 300) * 20;
+            if (currentStageIdx === 0) {
+                updateBlizzardBuffalo();
+                updateBossProjectiles();
+                
+                if (playerInvincible <= 0 && currentBoss.hp > 0 &&
+                    player.x < currentBoss.x + currentBoss.w && 
+                    player.x + player.w > currentBoss.x && 
+                    player.y < currentBoss.y + currentBoss.h && 
+                    player.y + player.h > currentBoss.y) {
+                    damagePlayer();
+                }
+            } else if (currentStageIdx === 1) {
+                updateQueuedOrdersDragoon();
+                updateBossProjectiles();
+                
+                if (playerInvincible <= 0 && currentBoss.hp > 0 &&
+                    player.x < currentBoss.x + currentBoss.w && 
+                    player.x + player.w > currentBoss.x && 
+                    player.y < currentBoss.y + currentBoss.h && 
+                    player.y + player.h > currentBoss.y) {
+                    damagePlayer();
+                }
+            } else if (currentStageIdx === 2) {
+                updateStormEagle();
+                updateBossProjectiles();
+                
+                if (playerInvincible <= 0 && currentBoss.hp > 0 &&
+                    player.x < currentBoss.x + currentBoss.w && 
+                    player.x + player.w > currentBoss.x && 
+                    player.y < currentBoss.y + currentBoss.h && 
+                    player.y + player.h > currentBoss.y) {
+                    damagePlayer();
+                }
+            } else if (currentStageIdx === 3) {
+                updateVile();
+                updateBossProjectiles();
+                
+                if (playerInvincible <= 0 && currentBoss.hp > 0 &&
+                    player.x < currentBoss.x + currentBoss.w && 
+                    player.x + player.w > currentBoss.x && 
+                    player.y < currentBoss.y + currentBoss.h && 
+                    player.y + player.h > currentBoss.y) {
+                    damagePlayer();
+                }
+            } else if (currentStageIdx === 4) {
+                updateSigmaMMX2();
+                updateBossProjectiles();
+                
+                if (playerInvincible <= 0 && currentBoss.hp > 0 &&
+                    player.x < currentBoss.x + currentBoss.w && 
+                    player.x + player.w > currentBoss.x && 
+                    player.y < currentBoss.y + currentBoss.h && 
+                    player.y + player.h > currentBoss.y) {
+                    damagePlayer();
+                }
+            } else {
+                currentBoss.y = currentBoss.startY + Math.sin(Date.now() / 300) * 20;
+            }
 
             for (let i = projectiles.length - 1; i >= 0; i--) {
                 let p = projectiles[i];
@@ -308,11 +1598,43 @@
                 if (currentBoss.hp > 0 && p.x < currentBoss.x + currentBoss.w && p.x + p.w > currentBoss.x && p.y < currentBoss.y + currentBoss.h && p.y + p.h > currentBoss.y) {
                     currentBoss.hp -= 8; 
                     projectiles.splice(i, 1);
-                    if (currentBoss.hp <= 0) gameState = 'VICTORY';
+                    
+                    let sparkColor = "#FACC15";
+                    if (currentStageIdx === 0) sparkColor = "#E0F2FE";
+                    else if (currentStageIdx === 1) sparkColor = "#EF4444";
+                    else if (currentStageIdx === 2) sparkColor = "#E2E8F0";
+                    else if (currentStageIdx === 3) sparkColor = "#A78BFA";
+                    else if (currentStageIdx === 4) sparkColor = "#34D399";
+
+                    for (let j = 0; j < 5; j++) {
+                        particles.push({
+                            x: p.x,
+                            y: p.y,
+                            vx: (player.facing === 'right' ? -1 : 1) * (1 + Math.random() * 3),
+                            vy: -2 + Math.random() * 4,
+                            size: 2 + Math.random() * 3,
+                            color: sparkColor,
+                            life: 15
+                        });
+                    }
+
+                    if (currentBoss.hp <= 0) {
+                        let explosionColor = "#FACC15";
+                        if (currentStageIdx === 0) explosionColor = "#E0F2FE";
+                        else if (currentStageIdx === 1) explosionColor = "#EF4444";
+                        else if (currentStageIdx === 2) explosionColor = "#E2E8F0";
+                        else if (currentStageIdx === 3) explosionColor = "#A78BFA";
+                        else if (currentStageIdx === 4) explosionColor = "#34D399";
+
+                        triggerDefeatExplosion(currentBoss.x + currentBoss.w/2, currentBoss.y + currentBoss.h/2, explosionColor);
+                        gameState = 'VICTORY';
+                    }
                 } else if (p.x > canvas.width || p.x < -20) {
                     projectiles.splice(i, 1);
                 }
             }
+
+            updateParticles();
 
             if (player.x < 0) player.x = 0;
             if (player.x > canvas.width - player.w) player.x = canvas.width - player.w;
@@ -341,6 +1663,14 @@
                 return;
             }
 
+            ctx.save();
+            if (screenShakeTime > 0) {
+                const dx = (Math.random() - 0.5) * 8;
+                const dy = (Math.random() - 0.5) * 8;
+                ctx.translate(dx, dy);
+                screenShakeTime--;
+            }
+
             ctx.fillStyle = stage.env.bg; ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = stage.env.floor; ctx.fillRect(0, 340, canvas.width, 60);
             ctx.fillStyle = stage.env.accent; ctx.fillRect(0, 340, canvas.width, 4);
@@ -352,9 +1682,21 @@
             drawMegaGaboX(ctx, player, stage.player);
 
             if (gameState === 'PLAYING') {
-                ctx.fillStyle = stage.boss.color; ctx.fillRect(currentBoss.x, currentBoss.y, currentBoss.w, currentBoss.h);
-                ctx.fillStyle = '#000'; ctx.font = "10px 'Press Start 2P'";
-                ctx.fillText(stage.boss.text, currentBoss.x + 10, currentBoss.y + currentBoss.h/2);
+                if (currentStageIdx === 0) {
+                    drawBlizzardBuffalo(ctx, currentBoss);
+                } else if (currentStageIdx === 1) {
+                    drawQueuedOrdersDragoon(ctx, currentBoss);
+                } else if (currentStageIdx === 2) {
+                    drawStormEagle(ctx, currentBoss);
+                } else if (currentStageIdx === 3) {
+                    drawVile(ctx, currentBoss);
+                } else if (currentStageIdx === 4) {
+                    drawSigmaMMX2(ctx, currentBoss);
+                } else {
+                    ctx.fillStyle = stage.boss.color; ctx.fillRect(currentBoss.x, currentBoss.y, currentBoss.w, currentBoss.h);
+                    ctx.fillStyle = '#000'; ctx.font = "10px 'Press Start 2P'";
+                    ctx.fillText(stage.boss.text, currentBoss.x + 10, currentBoss.y + currentBoss.h/2);
+                }
                 
                 ctx.fillStyle = '#FFF'; ctx.fillText(currentBoss.name, currentBoss.x - 40, currentBoss.y - 20);
                 ctx.fillStyle = '#555'; ctx.fillRect(currentBoss.x - 40, currentBoss.y - 10, 150, 8);
@@ -374,6 +1716,12 @@
             }
 
             projectiles.forEach(p => drawProjectile(ctx, p, stage.player.weapon));
+            if (currentStageIdx >= 0 && currentStageIdx <= 4) {
+                drawBossProjectiles(ctx);
+            }
+            drawParticles(ctx);
+
+            ctx.restore();
         }
 
         function loop() { update(); draw(); requestAnimationFrame(loop); }
