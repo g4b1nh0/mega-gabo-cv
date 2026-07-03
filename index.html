@@ -135,7 +135,7 @@
             Player is ready for his next challenge!
         </div>
         <div>
-            <a href="https://github.com/g4br13lm4r1n" target="_blank" class="btn">Github 💻</a>
+            <a href="https://github.com/g4b1nh0" target="_blank" class="btn">Github 💻</a>
             <a href="https://www.linkedin.com/in/g4br13lm4r1n" target="_blank" class="btn">LinkedIn ✉️</a>
         </div>
     </div>
@@ -175,39 +175,49 @@
                 boss: { name: "Revenue Assurance", hp: 100, color: "#38bdf8", w: 100, h: 120, text: "" },
                 env: { bg: "#1f2937", floor: "#4b5563", accent: "#f97316" }, 
                 player: { weapon: "Coding basics buster", main: "#1F6FEB", light: "#38bdf8", bColor: "#facc15" },
-                unlock: { title: "System's troubleshooting spark acquired!", items: ["> PL/SQL", "> Shell Scripting", "> Java & XML", "> UNIX basic commands"] }
+                unlock: { title: "System's troubleshooting spark acquired!", items: ["> PL/SQL", "> Shell Scripting", "> Java & XML", "> UNIX basic commands"] },
+                init: { w: 100, h: 120, startY: 220, y: 220, chargeState: 'idle', chargeTimer: 120, shootTimer: 60, chargeSpeed: 0 },
+                behavior: { update: updateBlizzardBuffalo, draw: drawBlizzardBuffalo, particleColor: "#E0F2FE" }
             },
             {
                 id: "Level 2 - Liverpool/Walmart",
                 title: "2015 - 2019 -> Order Management Systems, complex platforms as the backbone of ecommerce ecosystems.",
                 boss: { name: "Queued orders", hp: 120, color: "#3b82f6", w: 70, h: 130, text: "" },
                 env: { bg: "#0f172a", floor: "#000000", accent: "#3b82f6" }, 
-                player: { weapon: "System's troubleshooting spark⚡", main: "#ea580c", light: "#fdba74", bColor: "#ea580c" }, 
-                unlock: { title: "OMS Crusher ", items: ["> 🌩️ Java and spring framework", "> Jenkins", "> IBM Sterling OMS", "> App. Servers"] }
+                player: { weapon: "System's troubleshooting spark⚡", main: "#ea580c", light: "#fdba74", bColor: "#ea580c" },
+                unlock: { title: "OMS Crusher ", items: ["> 🌩️ Java and spring framework", "> Jenkins", "> IBM Sterling OMS", "> App. Servers"] },
+                init: { w: 70, h: 130, startY: 210, y: 210, actionState: 'idle', actionTimer: 60, shootTimer: 30, dy: 0, grounded: true },
+                behavior: { update: updateQueuedOrdersDragoon, draw: drawQueuedOrdersDragoon, particleColor: "#EF4444" }
             },
             {
                 id: "Level 3 - Norstrom",
                 title: "2019-2021 A decadent OMS needs a last support. Coexistence with the inhouse OMS, migration to cloud and decoupling.",
                 boss: { name: "Invoice Backlog", hp: 120, color: "#3b82f6", w: 70, h: 100, text: "" },
                 env: { bg: "#0f172a", floor: "#000000", accent: "#3b82f6" }, 
-                player: { weapon: "OMS Crusher ⚡", main: "#ea580c", light: "#fdba74", bColor: "#ea580c" }, 
-                unlock: { title: "Cloud Dash Acquired!", items: ["> 🌩️ GCP Basics", "> Docker & Kubernetes", "> Datadog/New Relic", "> Jmeter"] }
+                player: { weapon: "OMS Crusher ⚡", main: "#ea580c", light: "#fdba74", bColor: "#ea580c" },
+                unlock: { title: "Cloud Dash Acquired!", items: ["> 🌩️ GCP Basics", "> Docker & Kubernetes", "> Datadog/New Relic", "> Jmeter"] },
+                init: { w: 70, h: 100, startY: 240, y: 240, actionState: 'idle', actionTimer: 90, shootTimer: 45 },
+                behavior: { update: updateStormEagle, draw: drawStormEagle, particleColor: "#E2E8F0" }
             },
             {
                 id: "Level 4 - Philip Morris Mexico",
                 title: "2021-2025 -> Datalake disaster, migration to the new data platform needed to support Data Governance raise.",
                 boss: { name: "Legacy Data Ocean", hp: 140, color: "#D73A49", w: 65, h: 115, text: "" },
                 env: { bg: "#1a202c", floor: "#1F6FEB", accent: "#facc15" }, 
-                player: { weapon: "Cloud Dash🌩️", main: "#64748b", light: "#cbd5e1", bColor: "#e2e8f0" }, 
-                unlock: { title: "Data Management blade acquired!", items: ["> ❄️ Snowflake", "> dbt & Matillion", "> Medallion architecture", "AWS Data Services", "Scrum","Data Delivery"] }
+                player: { weapon: "Cloud Dash🌩️", main: "#64748b", light: "#cbd5e1", bColor: "#e2e8f0" },
+                unlock: { title: "Data Management blade acquired!", items: ["> ❄️ Snowflake", "> dbt & Matillion", "> Medallion architecture", "AWS Data Services", "Scrum","Data Delivery"] },
+                init: { w: 65, h: 115, startY: 225, y: 225, actionState: 'idle', actionTimer: 100, shootTimer: 50, grounded: true },
+                behavior: { update: updateVile, draw: drawVile, particleColor: "#A78BFA" }
             },
             {
                 id: "Level 5 - DANONE",
                 title: "2025-2026 Danone -> Invoice to cash issues due to Customer's MDM problems. Nulls, duplicates and inconsistencies attack!",
                 boss: { name: "Data Quality for Customer's MDM", hp: 160, color: "#00A859", w: 80, h: 140, text: "" },
                 env: { bg: "#022c22", floor: "#ffffff", accent: "#00A859" }, 
-                player: { weapon: "Data Management Blade ❄️", main: "#ffffff", light: "#38bdf8", bColor: "#FFF" }, 
-                unlock: { title: "MDM and Governance/Stewardship Shield Acquired!", items: ["> 🧠 MDM", "> SAP ECC Data Model (KNA1, KNB1, KNVV)", "> Team Management", "> Stakeholder Management","> Data Quality Dimensions"] }
+                player: { weapon: "Data Management Blade ❄️", main: "#ffffff", light: "#38bdf8", bColor: "#FFF" },
+                unlock: { title: "MDM and Governance/Stewardship Shield Acquired!", items: ["> 🧠 MDM", "> SAP ECC Data Model (KNA1, KNB1, KNVV)", "> Team Management", "> Stakeholder Management","> Data Quality Dimensions"] },
+                init: { w: 80, h: 140, startY: 200, y: 200, actionState: 'idle', actionTimer: 120, shootTimer: 60, dy: 0, grounded: true },
+                behavior: { update: updateSigmaMMX2, draw: drawSigmaMMX2, particleColor: "#34D399" }
             }
         ];
 
@@ -239,76 +249,9 @@
             titleEl.innerHTML = stage.title;
             canvas.style.borderColor = stage.env.accent;
             
-            if (idx === 0) {
-                currentBoss = { 
-                    ...stage.boss, 
-                    w: 100, 
-                    h: 120, 
-                    startY: 220, 
-                    y: 220, 
-                    x: 650, 
-                    chargeState: 'idle', 
-                    chargeTimer: 120, 
-                    shootTimer: 60, 
-                    chargeSpeed: 0
-                };
-            } else if (idx === 1) {
-                currentBoss = { 
-                    ...stage.boss, 
-                    w: 70, 
-                    h: 130, 
-                    startY: 210, 
-                    y: 210, 
-                    x: 650, 
-                    actionState: 'idle', 
-                    actionTimer: 60, 
-                    shootTimer: 30,
-                    dy: 0,
-                    grounded: true
-                };
-            } else if (idx === 2) {
-                currentBoss = { 
-                    ...stage.boss, 
-                    w: 70, 
-                    h: 100, 
-                    startY: 240, 
-                    y: 240, 
-                    x: 650, 
-                    actionState: 'idle', 
-                    actionTimer: 90, 
-                    shootTimer: 45
-                };
-            } else if (idx === 3) {
-                currentBoss = { 
-                    ...stage.boss, 
-                    w: 65, 
-                    h: 115, 
-                    startY: 225, 
-                    y: 225, 
-                    x: 650, 
-                    actionState: 'idle', 
-                    actionTimer: 100, 
-                    shootTimer: 50,
-                    grounded: true
-                };
-            } else if (idx === 4) {
-                currentBoss = { 
-                    ...stage.boss, 
-                    w: 80, 
-                    h: 140, 
-                    startY: 200, 
-                    y: 200, 
-                    x: 650, 
-                    actionState: 'idle', 
-                    actionTimer: 120, 
-                    shootTimer: 60,
-                    dy: 0,
-                    grounded: true
-                };
-            } else {
-                currentBoss = { ...stage.boss, startY: 200, y: 200, x: 650 };
-            }
-            
+            const init = stage.init || { startY: 200, y: 200 };
+            currentBoss = { ...stage.boss, x: 650, ...init };
+
             player.x = 50; player.y = 300;
             projectiles = [];
             bossProjectiles = [];
@@ -1532,58 +1475,14 @@
                 }
             }
 
-            if (currentStageIdx === 0) {
-                updateBlizzardBuffalo();
+            if (currentStageIdx >= 0 && currentStageIdx < STAGES.length) {
+                STAGES[currentStageIdx].behavior.update();
                 updateBossProjectiles();
-                
+
                 if (playerInvincible <= 0 && currentBoss.hp > 0 &&
-                    player.x < currentBoss.x + currentBoss.w && 
-                    player.x + player.w > currentBoss.x && 
-                    player.y < currentBoss.y + currentBoss.h && 
-                    player.y + player.h > currentBoss.y) {
-                    damagePlayer();
-                }
-            } else if (currentStageIdx === 1) {
-                updateQueuedOrdersDragoon();
-                updateBossProjectiles();
-                
-                if (playerInvincible <= 0 && currentBoss.hp > 0 &&
-                    player.x < currentBoss.x + currentBoss.w && 
-                    player.x + player.w > currentBoss.x && 
-                    player.y < currentBoss.y + currentBoss.h && 
-                    player.y + player.h > currentBoss.y) {
-                    damagePlayer();
-                }
-            } else if (currentStageIdx === 2) {
-                updateStormEagle();
-                updateBossProjectiles();
-                
-                if (playerInvincible <= 0 && currentBoss.hp > 0 &&
-                    player.x < currentBoss.x + currentBoss.w && 
-                    player.x + player.w > currentBoss.x && 
-                    player.y < currentBoss.y + currentBoss.h && 
-                    player.y + player.h > currentBoss.y) {
-                    damagePlayer();
-                }
-            } else if (currentStageIdx === 3) {
-                updateVile();
-                updateBossProjectiles();
-                
-                if (playerInvincible <= 0 && currentBoss.hp > 0 &&
-                    player.x < currentBoss.x + currentBoss.w && 
-                    player.x + player.w > currentBoss.x && 
-                    player.y < currentBoss.y + currentBoss.h && 
-                    player.y + player.h > currentBoss.y) {
-                    damagePlayer();
-                }
-            } else if (currentStageIdx === 4) {
-                updateSigmaMMX2();
-                updateBossProjectiles();
-                
-                if (playerInvincible <= 0 && currentBoss.hp > 0 &&
-                    player.x < currentBoss.x + currentBoss.w && 
-                    player.x + player.w > currentBoss.x && 
-                    player.y < currentBoss.y + currentBoss.h && 
+                    player.x < currentBoss.x + currentBoss.w &&
+                    player.x + player.w > currentBoss.x &&
+                    player.y < currentBoss.y + currentBoss.h &&
                     player.y + player.h > currentBoss.y) {
                     damagePlayer();
                 }
@@ -1599,12 +1498,7 @@
                     currentBoss.hp -= 8; 
                     projectiles.splice(i, 1);
                     
-                    let sparkColor = "#FACC15";
-                    if (currentStageIdx === 0) sparkColor = "#E0F2FE";
-                    else if (currentStageIdx === 1) sparkColor = "#EF4444";
-                    else if (currentStageIdx === 2) sparkColor = "#E2E8F0";
-                    else if (currentStageIdx === 3) sparkColor = "#A78BFA";
-                    else if (currentStageIdx === 4) sparkColor = "#34D399";
+                    const particleColor = (STAGES[currentStageIdx] && STAGES[currentStageIdx].behavior.particleColor) || "#FACC15";
 
                     for (let j = 0; j < 5; j++) {
                         particles.push({
@@ -1613,20 +1507,13 @@
                             vx: (player.facing === 'right' ? -1 : 1) * (1 + Math.random() * 3),
                             vy: -2 + Math.random() * 4,
                             size: 2 + Math.random() * 3,
-                            color: sparkColor,
+                            color: particleColor,
                             life: 15
                         });
                     }
 
                     if (currentBoss.hp <= 0) {
-                        let explosionColor = "#FACC15";
-                        if (currentStageIdx === 0) explosionColor = "#E0F2FE";
-                        else if (currentStageIdx === 1) explosionColor = "#EF4444";
-                        else if (currentStageIdx === 2) explosionColor = "#E2E8F0";
-                        else if (currentStageIdx === 3) explosionColor = "#A78BFA";
-                        else if (currentStageIdx === 4) explosionColor = "#34D399";
-
-                        triggerDefeatExplosion(currentBoss.x + currentBoss.w/2, currentBoss.y + currentBoss.h/2, explosionColor);
+                        triggerDefeatExplosion(currentBoss.x + currentBoss.w/2, currentBoss.y + currentBoss.h/2, particleColor);
                         gameState = 'VICTORY';
                     }
                 } else if (p.x > canvas.width || p.x < -20) {
@@ -1682,16 +1569,8 @@
             drawMegaGaboX(ctx, player, stage.player);
 
             if (gameState === 'PLAYING') {
-                if (currentStageIdx === 0) {
-                    drawBlizzardBuffalo(ctx, currentBoss);
-                } else if (currentStageIdx === 1) {
-                    drawQueuedOrdersDragoon(ctx, currentBoss);
-                } else if (currentStageIdx === 2) {
-                    drawStormEagle(ctx, currentBoss);
-                } else if (currentStageIdx === 3) {
-                    drawVile(ctx, currentBoss);
-                } else if (currentStageIdx === 4) {
-                    drawSigmaMMX2(ctx, currentBoss);
+                if (currentStageIdx >= 0 && currentStageIdx < STAGES.length) {
+                    STAGES[currentStageIdx].behavior.draw(ctx, currentBoss);
                 } else {
                     ctx.fillStyle = stage.boss.color; ctx.fillRect(currentBoss.x, currentBoss.y, currentBoss.w, currentBoss.h);
                     ctx.fillStyle = '#000'; ctx.font = "10px 'Press Start 2P'";
