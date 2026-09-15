@@ -116,22 +116,22 @@
         </div>
         <div class="touch-btn start-btn" id="btn-start">NEXT</div>
         <div class="action-btns">
-            <div class="touch-btn" id="btn-shoot">J</div>
-            <div class="touch-btn" id="btn-jump">W</div>
+            <div class="touch-btn" id="btn-shoot">W</div>
+            <div class="touch-btn" id="btn-jump">J</div>
         </div>
     </div>
 
     <!-- Controles de Teclado (PC) -->
     <div class="controls-text" id="controls-ui">
-        Directions 🕹️: [A][D] Move | [W] o [SPACE] Jump | [J] Shoot | [ENTER] Next
+        Directions 🕹️: [A][D] o [◀][▶] Move | [J] Jump | [W] o [SPACE] Shoot | [ENTER] Next
     </div>
 
     <div id="interview-stage">
         <h2 style="color: #facc15; font-size: 18px; margin-bottom: 10px;">All stages completed!</h2>
         <div class="summary-text">
-            <strong>Gabriel Marín</strong> - <span class="highlight">Data Engineer | Data Quality SME |Data Governance Lead</span><br><br>
+            <strong>Gabriel Marín</strong> - <span class="highlight">Data Engineer | Data Quality SME | Data Governance Lead</span><br><br>
             Collected Skills:<br>
-            ⚡ OMS Crusher | 🌩️ Cloud Dash | ❄️ Data management Blade | 🧠 MDM and Governance/Stewardship Shield<br><br>
+            ⚡ OMS Crusher | 🌩️ Cloud Dash | ❄️ Data Management Blade | 🧠 MDM & Governance Shield | 🛰️ AI-Accelerated DQ Sentinel<br><br>
             Player is ready for his next challenge!
         </div>
         <div>
@@ -149,10 +149,20 @@
         const mobileControls = document.getElementById('mobile-controls');
 
         let keys = {};
-        
+
+        // Las flechas del teclado se normalizan a los mismos códigos que A/D/J
+        // para no duplicar lógica de movimiento/menú en el resto del juego.
+        const KEY_ALIASES = { ArrowLeft: 'KeyA', ArrowRight: 'KeyD', ArrowUp: 'KeyJ' };
+
         // --- EVENTOS DE TECLADO (PC) ---
-        window.addEventListener('keydown', e => keys[e.code] = true);
-        window.addEventListener('keyup', e => keys[e.code] = false);
+        window.addEventListener('keydown', e => {
+            keys[e.code] = true;
+            if (KEY_ALIASES[e.code]) keys[KEY_ALIASES[e.code]] = true;
+        });
+        window.addEventListener('keyup', e => {
+            keys[e.code] = false;
+            if (KEY_ALIASES[e.code]) keys[KEY_ALIASES[e.code]] = false;
+        });
 
         // --- EVENTOS TÁCTILES (Móvil) ---
         const mapTouch = (id, keyCode) => {
@@ -164,66 +174,78 @@
         };
         mapTouch('btn-left', 'KeyA');
         mapTouch('btn-right', 'KeyD');
-        mapTouch('btn-jump', 'KeyW');
-        mapTouch('btn-shoot', 'KeyJ');
+        mapTouch('btn-jump', 'KeyJ');
+        mapTouch('btn-shoot', 'KeyW');
         mapTouch('btn-start', 'Enter');
 
         const STAGES = [
             {
-                id: "Level 1 - Wedo Technologies",
-                title: "2013 to 2015  -> Revenue assurance implementations in Telco and Retail.",
+                id: "Level 1 - WeDo Technologies",
+                title: "2013-2015 · WeDo Technologies — Fraud & anomaly-detection rules for Telco and Retail (7-Eleven).",
                 boss: { name: "Revenue Assurance", hp: 100, color: "#38bdf8", w: 100, h: 120, text: "" },
-                env: { bg: "#1f2937", floor: "#4b5563", accent: "#f97316" }, 
+                env: { bg: "#1f2937", floor: "#4b5563", accent: "#f97316", drawProps: () => drawWedoProps(ctx) },
                 player: { weapon: "Coding basics buster", main: "#1F6FEB", light: "#38bdf8", bColor: "#facc15" },
-                unlock: { title: "System's troubleshooting spark acquired!", items: ["> PL/SQL", "> Shell Scripting", "> Java & XML", "> UNIX basic commands"] },
+                unlock: { title: "System's troubleshooting spark acquired!", items: ["> PL/SQL", "> Shell Scripting", "> Java & XML", "> UNIX basics"] },
                 init: { w: 100, h: 120, startY: 220, y: 220, chargeState: 'idle', chargeTimer: 120, shootTimer: 60, chargeSpeed: 0 },
                 behavior: { update: updateBlizzardBuffalo, draw: drawBlizzardBuffalo, particleColor: "#E0F2FE" }
             },
             {
-                id: "Level 2 - Liverpool/Walmart",
-                title: "2015 - 2019 -> Order Management Systems, complex platforms as the backbone of ecommerce ecosystems.",
-                boss: { name: "Queued orders", hp: 120, color: "#3b82f6", w: 70, h: 130, text: "" },
-                env: { bg: "#0f172a", floor: "#000000", accent: "#3b82f6" }, 
+                id: "Level 2 - Liverpool & Walmart",
+                title: "2015-2019 · Liverpool & Walmart — Led IBM Sterling OMS cloud migration and e-commerce performance testing.",
+                boss: { name: "Queued Orders", hp: 120, color: "#3b82f6", w: 70, h: 130, text: "" },
+                env: { bg: "#0f172a", floor: "#000000", accent: "#3b82f6", drawProps: () => drawOmsProps(ctx) },
                 player: { weapon: "System's troubleshooting spark⚡", main: "#ea580c", light: "#fdba74", bColor: "#ea580c" },
-                unlock: { title: "OMS Crusher ", items: ["> 🌩️ Java and spring framework", "> Jenkins", "> IBM Sterling OMS", "> App. Servers"] },
+                unlock: { title: "OMS Crusher acquired!", items: ["> IBM Sterling OMS", "> Cloud migration", "> JMeter & JUnit", "> OMS data ERDs"] },
                 init: { w: 70, h: 130, startY: 210, y: 210, actionState: 'idle', actionTimer: 60, shootTimer: 30, dy: 0, grounded: true },
                 behavior: { update: updateQueuedOrdersDragoon, draw: drawQueuedOrdersDragoon, particleColor: "#EF4444" }
             },
             {
-                id: "Level 3 - Norstrom",
-                title: "2019-2021 A decadent OMS needs a last support. Coexistence with the inhouse OMS, migration to cloud and decoupling.",
+                id: "Level 3 - Nordstrom",
+                title: "2019-2020 · Nordstrom — Migrated OMS to GCP (Docker/K8s) and modernized monitoring (Datadog → New Relic).",
                 boss: { name: "Invoice Backlog", hp: 120, color: "#3b82f6", w: 70, h: 100, text: "" },
-                env: { bg: "#0f172a", floor: "#000000", accent: "#3b82f6" }, 
+                env: { bg: "#0f172a", floor: "#000000", accent: "#3b82f6", drawProps: () => drawNordstromProps(ctx) },
                 player: { weapon: "OMS Crusher ⚡", main: "#ea580c", light: "#fdba74", bColor: "#ea580c" },
-                unlock: { title: "Cloud Dash Acquired!", items: ["> 🌩️ GCP Basics", "> Docker & Kubernetes", "> Datadog/New Relic", "> Jmeter"] },
+                unlock: { title: "Cloud Dash acquired!", items: ["> GCP, Docker & K8s", "> Spring Boot microservices", "> New Relic monitoring", "> JMeter load testing"] },
                 init: { w: 70, h: 100, startY: 240, y: 240, actionState: 'idle', actionTimer: 90, shootTimer: 45 },
                 behavior: { update: updateStormEagle, draw: drawStormEagle, particleColor: "#E2E8F0" }
             },
             {
                 id: "Level 4 - Philip Morris Mexico",
-                title: "2021-2025 -> Datalake disaster, migration to the new data platform needed to support Data Governance raise.",
+                title: "2020-2025 · Philip Morris — Built a Snowflake data platform from scratch and drove enterprise data governance.",
                 boss: { name: "Legacy Data Ocean", hp: 140, color: "#D73A49", w: 65, h: 115, text: "" },
-                env: { bg: "#1a202c", floor: "#1F6FEB", accent: "#facc15" }, 
+                env: { bg: "#1a202c", floor: "#1F6FEB", accent: "#facc15", drawProps: () => drawPMProps(ctx) },
                 player: { weapon: "Cloud Dash🌩️", main: "#64748b", light: "#cbd5e1", bColor: "#e2e8f0" },
-                unlock: { title: "Data Management blade acquired!", items: ["> ❄️ Snowflake", "> dbt & Matillion", "> Medallion architecture", "AWS Data Services", "Scrum","Data Delivery"] },
+                unlock: { title: "Data Management Blade acquired!", items: ["> ❄️ Snowflake, dbt & Matillion", "> Data warehouse modeling", "> Atlan governance", "> Terraform IaC", "> Data lineage"] },
                 init: { w: 65, h: 115, startY: 225, y: 225, actionState: 'idle', actionTimer: 100, shootTimer: 50, grounded: true },
                 behavior: { update: updateVile, draw: drawVile, particleColor: "#A78BFA" }
             },
             {
-                id: "Level 5 - DANONE",
-                title: "2025-2026 Danone -> Invoice to cash issues due to Customer's MDM problems. Nulls, duplicates and inconsistencies attack!",
+                id: "Level 5 - Danone",
+                title: "2025-2026 · Danone — Led Customer MDM governance and built a custom Data Quality framework.",
                 boss: { name: "Data Quality for Customer's MDM", hp: 160, color: "#00A859", w: 80, h: 140, text: "" },
-                env: { bg: "#022c22", floor: "#ffffff", accent: "#00A859" }, 
+                env: { bg: "#022c22", floor: "#ffffff", accent: "#00A859", drawProps: () => drawDanoneProps(ctx) },
                 player: { weapon: "Data Management Blade ❄️", main: "#ffffff", light: "#38bdf8", bColor: "#FFF" },
-                unlock: { title: "MDM and Governance/Stewardship Shield Acquired!", items: ["> 🧠 MDM", "> SAP ECC Data Model (KNA1, KNB1, KNVV)", "> Team Management", "> Stakeholder Management","> Data Quality Dimensions"] },
+                unlock: { title: "MDM & Governance Shield acquired!", items: ["> 🧠 MDM & Data Stewardship", "> DQ framework (Python + Great Expectations)", "> Power BI DQ dashboards", "> SAP ECC data model", "> Team & stakeholder mgmt"] },
                 init: { w: 80, h: 140, startY: 200, y: 200, actionState: 'idle', actionTimer: 120, shootTimer: 60, dy: 0, grounded: true },
                 behavior: { update: updateSigmaMMX2, draw: drawSigmaMMX2, particleColor: "#34D399" }
+            },
+            {
+                id: "Level 6 - Coforge (Choice Hotels/SkyTouch)",
+                title: "2026-Current · Coforge (Choice Hotels/SkyTouch) — AI-accelerated data quality & governance at hospitality scale.",
+                boss: { name: "Schema Drift Sentinel", hp: 170, color: "#06B6D4", w: 75, h: 130, text: "" },
+                env: { bg: "#082f33", floor: "#0e7490", accent: "#22D3EE", drawProps: () => drawCoforgeProps(ctx) },
+                player: { weapon: "MDM & Governance Shield 🧠", main: "#0EA5E9", light: "#67E8F9", bColor: "#22D3EE" },
+                unlock: { title: "AI-Accelerated DQ Sentinel acquired!", items: ["> Monte Carlo monitoring", "> Claude Code + AWS Bedrock", "> AWS Lambda DQ automation", "> Data contracts", "> Metadata management"] },
+                init: { w: 75, h: 130, startY: 215, y: 215, actionState: 'idle', actionTimer: 100, shootTimer: 55, chargeSpeed: 0 },
+                behavior: { update: updateSchemaDriftSentinel, draw: drawSchemaDriftSentinel, particleColor: "#67E8F9" }
             }
         ];
 
         let currentStageIdx = 0;
         let stage = STAGES[currentStageIdx];
         let gameState = 'INTRO';
+        let selectStageIdx = 0; // cursor position in the stage-select menu (0..STAGES.length -> last entry is "Finish")
+        const defeatedStages = new Set(); // in-session only, tracked to show a checkmark in the menu
 
         const player = { x: 50, y: 300, w: 32, h: 48, dy: 0, jump: -12, grounded: false, facing: 'right' };
         let currentBoss = { ...stage.boss, startY: 190, y: 190, x: 650 };
@@ -267,23 +289,35 @@
                 return;
             }
             ctx.save();
-            ctx.translate(p.x + p.w/2, p.y + p.h/2);
+            const isMoving = (keys['KeyA'] || keys['KeyD']) && p.grounded;
+            const walkBob = isMoving ? Math.abs(Math.sin(Date.now() / 90)) * 2 : 0;
+            ctx.translate(p.x + p.w/2, p.y + p.h/2 - walkBob);
             if (p.facing === 'left') ctx.scale(-1, 1);
             const bx = -p.w/2, by = -p.h/2;
 
+            // Sombra de contacto
+            ctx.fillStyle = "rgba(0,0,0,0.25)";
+            ctx.fillRect(bx + 4, by + 46 + walkBob, p.w - 8, 3);
+
             ctx.fillStyle = colors.main;
-            ctx.fillRect(bx + 2, by + 36, 12, 12); ctx.fillRect(bx + 16, by + 32, 14, 16); 
-            ctx.fillStyle = colors.light; ctx.fillRect(bx + 16, by + 32, 14, 2); 
+            ctx.fillRect(bx + 2, by + 36, 12, 12); ctx.fillRect(bx + 16, by + 32, 14, 16);
+            ctx.fillStyle = colors.light; ctx.fillRect(bx + 16, by + 32, 14, 2);
             ctx.fillRect(bx + 6, by + 26, 6, 10); ctx.fillRect(bx + 18, by + 22, 8, 10);
-            ctx.fillStyle = colors.main; ctx.fillRect(bx + 6, by + 16, 18, 12); 
-            ctx.fillStyle = colors.light; ctx.fillRect(bx + 10, by + 18, 10, 6); 
-            ctx.fillStyle = colors.main; ctx.fillRect(bx + 8, by + 0, 16, 16); 
+            ctx.fillStyle = colors.main; ctx.fillRect(bx + 6, by + 16, 18, 12);
+            ctx.fillStyle = colors.light; ctx.fillRect(bx + 10, by + 18, 10, 6);
+            // Sombreado sutil bajo el casco/torso para dar volumen
+            ctx.fillStyle = "rgba(0,0,0,0.15)"; ctx.fillRect(bx + 6, by + 24, 18, 4);
+            ctx.fillStyle = colors.main; ctx.fillRect(bx + 8, by + 0, 16, 16);
             ctx.fillStyle = '#f8b4a0'; ctx.fillRect(bx + 12, by + 4, 10, 8);
-            ctx.fillStyle = '#FFF'; ctx.fillRect(bx + 17, by + 6, 2, 4); 
-            ctx.fillStyle = '#facc15'; ctx.fillRect(bx + 14, by + 0, 4, 2); ctx.fillRect(bx + 22, by + 4, 2, 6); 
+            ctx.fillStyle = '#FFF'; ctx.fillRect(bx + 17, by + 6, 2, 4);
+            ctx.fillStyle = '#facc15'; ctx.fillRect(bx + 14, by + 0, 4, 2);
+            // Luz del casco parpadeando (como indicador de "sistema activo")
+            const blink = Math.floor(Date.now() / 400) % 2 === 0;
+            ctx.fillStyle = blink ? '#facc15' : '#b45309';
+            ctx.fillRect(bx + 22, by + 4, 2, 6);
             ctx.fillStyle = colors.light; ctx.fillRect(bx + 2, by + 16, 5, 10);
-            ctx.fillStyle = colors.main; ctx.fillRect(bx + 20, by + 14, 16, 12); 
-            ctx.fillStyle = '#D73A49'; ctx.fillRect(bx + 34, by + 16, 2, 8); 
+            ctx.fillStyle = colors.main; ctx.fillRect(bx + 20, by + 14, 16, 12);
+            ctx.fillStyle = '#D73A49'; ctx.fillRect(bx + 34, by + 16, 2, 8);
             ctx.restore();
         }
 
@@ -297,6 +331,109 @@
             } else {
                 ctx.fillRect(p.x, p.y, 12, 8);
             }
+        }
+
+        // --- Fondos temáticos por etapa (utilería simple detrás de jugador/boss) ---
+        function drawWedoProps(ctx) {
+            // Sala de monitoreo / NOC de telecom: racks de servidores con luces parpadeando
+            for (let i = 0; i < 4; i++) {
+                const x = 40 + i * 45;
+                ctx.fillStyle = "#111827";
+                ctx.fillRect(x, 60, 30, 260);
+                ctx.fillStyle = "#374151";
+                ctx.fillRect(x + 3, 60, 24, 8);
+                for (let j = 0; j < 6; j++) {
+                    const blink = Math.sin(Date.now() / 300 + i + j) > 0.4;
+                    ctx.fillStyle = blink ? "#38bdf8" : "#1e3a5f";
+                    ctx.fillRect(x + 5, 75 + j * 12, 4, 4);
+                    ctx.fillStyle = blink ? "#f97316" : "#4b3a1e";
+                    ctx.fillRect(x + 12, 75 + j * 12, 4, 4);
+                }
+            }
+        }
+
+        function drawOmsProps(ctx) {
+            // Supermercado futurista: estanterías + letrero colgante de pasillo
+            for (let i = 0; i < 3; i++) {
+                const x = 500 + i * 90;
+                ctx.fillStyle = "#1e293b";
+                ctx.fillRect(x, 200, 70, 140);
+                ctx.fillStyle = "#3b82f6";
+                for (let j = 0; j < 4; j++) ctx.fillRect(x + 4, 210 + j * 30, 62, 4);
+            }
+            ctx.fillStyle = "#0f172a";
+            ctx.fillRect(560, 60, 120, 30);
+            ctx.fillStyle = "#facc15";
+            ctx.font = "8px 'Press Start 2P'";
+            ctx.fillText("AISLE: OMS", 570, 80);
+        }
+
+        function drawNordstromProps(ctx) {
+            // Centro de datos migrando a la nube: torre de servidores + nube estilizada
+            ctx.fillStyle = "#1e293b";
+            ctx.fillRect(60, 120, 40, 200);
+            ctx.fillStyle = "#3b82f6";
+            for (let j = 0; j < 5; j++) ctx.fillRect(64, 130 + j * 35, 32, 6);
+            ctx.fillStyle = "#E2E8F0";
+            ctx.fillRect(560, 70, 60, 20);
+            ctx.fillRect(540, 85, 100, 20);
+            ctx.fillRect(575, 60, 40, 15);
+            if (Math.sin(Date.now() / 200) > 0) {
+                ctx.strokeStyle = "#38bdf8";
+                ctx.beginPath(); ctx.moveTo(100, 120); ctx.lineTo(560, 90); ctx.stroke();
+            }
+        }
+
+        function drawPMProps(ctx) {
+            // Fábrica / datalake abandonado: tuberías industriales y silos
+            ctx.fillStyle = "#0f172a";
+            ctx.fillRect(50, 150, 18, 190);
+            ctx.fillRect(50, 150, 60, 18);
+            ctx.fillRect(92, 150, 18, 190);
+            ctx.fillStyle = "#1F6FEB";
+            for (let i = 0; i < 2; i++) {
+                const x = 550 + i * 70;
+                ctx.fillStyle = "#334155";
+                ctx.fillRect(x, 140, 45, 200);
+                ctx.fillStyle = "#1e293b";
+                ctx.fillRect(x, 140, 45, 15);
+                ctx.fillStyle = "#facc15";
+                ctx.fillRect(x + 18, 200, 9, 9);
+            }
+        }
+
+        function drawDanoneProps(ctx) {
+            // Laboratorio / centro MDM limpio: paneles + tarjeta de "customer record"
+            for (let i = 0; i < 3; i++) {
+                const x = 60 + i * 50;
+                ctx.fillStyle = "#ffffff33";
+                ctx.fillRect(x, 90, 35, 55);
+                ctx.fillStyle = "#00A859";
+                ctx.fillRect(x + 4, 96, 27, 6);
+            }
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(590, 200, 60, 40);
+            ctx.fillStyle = "#00A859";
+            ctx.fillRect(596, 208, 48, 6);
+            ctx.fillRect(596, 218, 30, 5);
+            ctx.fillRect(596, 227, 40, 5);
+        }
+
+        function drawCoforgeProps(ctx) {
+            // Lobby de hotel tech: mostrador de recepción + llave digital flotante
+            ctx.fillStyle = "#0e7490";
+            ctx.fillRect(40, 250, 140, 90);
+            ctx.fillStyle = "#0891b2";
+            ctx.fillRect(40, 250, 140, 10);
+            ctx.fillStyle = "#22D3EE";
+            for (let i = 0; i < 3; i++) ctx.fillRect(55 + i * 40, 265, 20, 20);
+
+            const floatY = Math.sin(Date.now() / 400) * 6;
+            ctx.fillStyle = "#164e63";
+            ctx.fillRect(600, 130 + floatY, 30, 45);
+            ctx.fillStyle = "#67E8F9";
+            ctx.fillRect(605, 138 + floatY, 20, 6);
+            ctx.fillRect(605, 150 + floatY, 20, 4);
         }
 
         function drawBlizzardBuffalo(ctx, boss) {
@@ -1247,6 +1384,157 @@
             });
         }
 
+        function drawSchemaDriftSentinel(ctx, boss) {
+            ctx.save();
+            const bx = boss.x;
+            const by = boss.y;
+            const bw = boss.w;
+            const bh = boss.h;
+
+            const isCharging = boss.actionState === 'charging';
+            const isDashing = boss.actionState === 'dashing';
+            const offsetY = isCharging ? Math.sin(Date.now() / 15) * 2 : Math.sin(Date.now() / 250) * 3;
+            ctx.translate(bx, by + offsetY);
+
+            const cyanDark = "#0E7490";
+            const cyanMid = "#06B6D4";
+            const cyanLight = "#67E8F9";
+            const metal = "#334155";
+            const alertRed = "#EF4444";
+
+            // Sombra / thruster glow bajo el sentinel (flota, no toca el piso)
+            ctx.fillStyle = "rgba(6, 182, 212, 0.3)";
+            ctx.fillRect(10, bh - 5, bw - 20, 10);
+
+            // Cuerpo principal (torso "servidor")
+            ctx.fillStyle = cyanDark;
+            ctx.fillRect(15, 35, bw - 30, bh - 60);
+            ctx.fillStyle = cyanMid;
+            ctx.fillRect(20, 42, bw - 40, 10);
+            ctx.fillRect(20, 60, bw - 40, 10);
+
+            // Panel/"pantalla" central que parpadea en rojo cuando ataca (drift alert)
+            ctx.fillStyle = (isCharging || isDashing) ? alertRed : cyanLight;
+            ctx.fillRect(bw/2 - 8, 50, 16, 12);
+
+            // Cabeza / sensor ocular giratorio
+            ctx.fillStyle = metal;
+            ctx.fillRect(bw/2 - 14, 8, 28, 24);
+            ctx.fillStyle = cyanLight;
+            const eyeX = bw/2 - 6 + Math.sin(Date.now() / 180) * 5;
+            ctx.fillRect(eyeX, 16, 10, 8);
+
+            // Antena
+            ctx.fillStyle = metal;
+            ctx.fillRect(bw/2 - 2, 0, 4, 10);
+            ctx.fillStyle = alertRed;
+            ctx.fillRect(bw/2 - 3, -4, 6, 6);
+
+            // Brazos/thrusters laterales
+            ctx.fillStyle = cyanDark;
+            ctx.fillRect(0, 40, 14, 30);
+            ctx.fillRect(bw - 14, 40, 14, 30);
+            ctx.fillStyle = cyanLight;
+            ctx.fillRect(0, isDashing ? 30 : 65, 14, 8);
+            ctx.fillRect(bw - 14, isDashing ? 30 : 65, 14, 8);
+
+            // Base flotante (thrusters inferiores)
+            ctx.fillStyle = metal;
+            ctx.fillRect(10, bh - 30, bw - 20, 18);
+            ctx.fillStyle = cyanLight;
+            ctx.fillRect(15, bh - 16, 12, 6);
+            ctx.fillRect(bw - 27, bh - 16, 12, 6);
+
+            ctx.restore();
+        }
+
+        function shootDataBurst() {
+            for (let i = 0; i < 2; i++) {
+                bossProjectiles.push({
+                    x: currentBoss.x,
+                    y: currentBoss.y + 35 + i * 30,
+                    vx: -6.5,
+                    vy: (i === 0 ? -0.5 : 0.5),
+                    w: 14,
+                    h: 10,
+                    type: 'databurst'
+                });
+            }
+            for (let i = 0; i < 5; i++) {
+                particles.push({
+                    x: currentBoss.x,
+                    y: currentBoss.y + 45,
+                    vx: -2 - Math.random() * 3,
+                    vy: -2 + Math.random() * 4,
+                    size: 2 + Math.random() * 2,
+                    color: "#67E8F9",
+                    life: 15
+                });
+            }
+        }
+
+        function updateSchemaDriftSentinel() {
+            if (currentBoss.actionState === 'idle') {
+                currentBoss.shootTimer--;
+                if (currentBoss.shootTimer <= 0) {
+                    shootDataBurst();
+                    currentBoss.shootTimer = 140 + Math.random() * 90;
+                }
+
+                currentBoss.actionTimer--;
+                if (currentBoss.actionTimer <= 0) {
+                    currentBoss.actionState = 'charging';
+                    currentBoss.actionTimer = 45;
+                }
+            }
+            else if (currentBoss.actionState === 'charging') {
+                if (Math.random() < 0.4) {
+                    particles.push({
+                        x: currentBoss.x + 10,
+                        y: currentBoss.y + Math.random() * currentBoss.h,
+                        vx: -1 - Math.random() * 2,
+                        vy: -1 + Math.random() * 2,
+                        size: 3 + Math.random() * 3,
+                        color: "#EF4444",
+                        life: 15
+                    });
+                }
+                currentBoss.actionTimer--;
+                if (currentBoss.actionTimer <= 0) {
+                    currentBoss.actionState = 'dashing';
+                    currentBoss.chargeSpeed = -11;
+                }
+            }
+            else if (currentBoss.actionState === 'dashing') {
+                currentBoss.x += currentBoss.chargeSpeed;
+                if (Math.random() < 0.4) {
+                    particles.push({
+                        x: currentBoss.x + 20 + Math.random() * 40,
+                        y: currentBoss.y + currentBoss.h - 5,
+                        vx: 2 + Math.random() * 3,
+                        vy: -1 - Math.random() * 2,
+                        size: 3 + Math.random() * 3,
+                        color: "#22D3EE",
+                        life: 20
+                    });
+                }
+                if (currentBoss.x <= 30) {
+                    currentBoss.x = 30;
+                    currentBoss.actionState = 'returning';
+                    currentBoss.chargeSpeed = 4;
+                    screenShakeTime = 15;
+                }
+            }
+            else if (currentBoss.actionState === 'returning') {
+                currentBoss.x += currentBoss.chargeSpeed;
+                if (currentBoss.x >= 650) {
+                    currentBoss.x = 650;
+                    currentBoss.actionState = 'idle';
+                    currentBoss.actionTimer = 150 + Math.random() * 100;
+                }
+            }
+        }
+
         function updateParticles() {
             for (let i = particles.length - 1; i >= 0; i--) {
                 let p = particles[i];
@@ -1402,6 +1690,13 @@
                     ctx.fillRect(bp.x + 2, bp.y + 2, bp.w - 4, bp.h - 4);
                     ctx.fillStyle = "#A7F3D0";
                     ctx.fillRect(bp.x + 5, bp.y + 5, bp.w - 10, bp.h - 10);
+                } else if (bp.type === 'databurst') {
+                    ctx.fillStyle = "#0E7490";
+                    ctx.fillRect(bp.x, bp.y, bp.w, bp.h);
+                    ctx.fillStyle = "#06B6D4";
+                    ctx.fillRect(bp.x + 2, bp.y + 1, bp.w - 4, bp.h - 2);
+                    ctx.fillStyle = "#67E8F9";
+                    ctx.fillRect(bp.x + 4, bp.y + 3, bp.w - 8, bp.h - 6);
                 }
             });
         }
@@ -1445,11 +1740,22 @@
 
         function update() {
             if (gameState === 'INTRO') {
-                if (keys['Enter']) { keys['Enter'] = false; loadStage(0); }
+                if (keys['Enter']) { keys['Enter'] = false; gameState = 'STAGE_SELECT'; titleEl.innerHTML = "MEGA CV - GABRIEL MARÍN"; }
+                return;
+            }
+            if (gameState === 'STAGE_SELECT') {
+                const totalEntries = STAGES.length + 1; // + "Finish" entry
+                if (keys['KeyA']) { keys['KeyA'] = false; selectStageIdx = (selectStageIdx - 1 + totalEntries) % totalEntries; }
+                if (keys['KeyD']) { keys['KeyD'] = false; selectStageIdx = (selectStageIdx + 1) % totalEntries; }
+                if (keys['Enter'] || keys['KeyW'] || keys['Space']) {
+                    keys['Enter'] = false; keys['KeyW'] = false; keys['Space'] = false;
+                    currentStageIdx = selectStageIdx;
+                    loadStage(selectStageIdx);
+                }
                 return;
             }
             if (gameState === 'VICTORY') {
-                if (keys['Enter']) { keys['Enter'] = false; currentStageIdx++; loadStage(currentStageIdx); }
+                if (keys['Enter']) { keys['Enter'] = false; gameState = 'STAGE_SELECT'; titleEl.innerHTML = "MEGA CV - GABRIEL MARÍN"; }
                 return;
             }
             if (gameState === 'END') return;
@@ -1462,16 +1768,16 @@
                 if (keys['KeyA']) { player.x -= 6; player.facing = 'left'; }
                 if (keys['KeyD']) { player.x += 6; player.facing = 'right'; }
             }
-            if ((keys['KeyW'] || keys['Space']) && player.grounded) { player.dy = player.jump; player.grounded = false; }
+            if (keys['KeyJ'] && player.grounded) { player.dy = player.jump; player.grounded = false; }
 
             player.dy += gravity; player.y += player.dy;
             if (player.y + player.h >= 340) { player.y = 340 - player.h; player.dy = 0; player.grounded = true; }
 
-            if (keys['KeyJ']) {
+            if (keys['KeyW'] || keys['Space']) {
                 if (projectiles.length < 5) {
                     const dir = player.facing === 'right' ? 1 : -1;
                     projectiles.push({ x: player.facing === 'right' ? player.x + player.w : player.x - 10, y: player.y + 16, speed: 10 * dir, w: 12, h: 8 });
-                    keys['KeyJ'] = false; 
+                    keys['KeyW'] = false; keys['Space'] = false;
                 }
             }
 
@@ -1514,6 +1820,7 @@
 
                     if (currentBoss.hp <= 0) {
                         triggerDefeatExplosion(currentBoss.x + currentBoss.w/2, currentBoss.y + currentBoss.h/2, particleColor);
+                        defeatedStages.add(currentStageIdx);
                         gameState = 'VICTORY';
                     }
                 } else if (p.x > canvas.width || p.x < -20) {
@@ -1550,6 +1857,43 @@
                 return;
             }
 
+            if (gameState === 'STAGE_SELECT') {
+                ctx.fillStyle = '#0D1117'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#00FF9C'; ctx.font = "14px 'Press Start 2P'";
+                ctx.fillText("SELECT YOUR STAGE", 240, 45);
+
+                ctx.font = "9px 'Press Start 2P'";
+                const rowH = 40;
+                const startY = 75;
+                STAGES.forEach((s, idx) => {
+                    const y = startY + idx * rowH;
+                    const selected = idx === selectStageIdx;
+                    ctx.fillStyle = selected ? '#facc15' : '#334155';
+                    ctx.fillRect(30, y - 18, 14, 14);
+                    ctx.fillStyle = s.boss.color;
+                    ctx.fillRect(33, y - 15, 8, 8);
+
+                    ctx.fillStyle = selected ? '#facc15' : '#FFF';
+                    ctx.fillText((selected ? '> ' : '  ') + s.id, 55, y - 5);
+                    ctx.fillStyle = '#8b949e';
+                    ctx.font = "7px 'Press Start 2P'";
+                    ctx.fillText(s.boss.name + (defeatedStages.has(idx) ? '  [CLEARED]' : ''), 55, y + 8);
+                    ctx.font = "9px 'Press Start 2P'";
+                });
+
+                const finishY = startY + STAGES.length * rowH;
+                const finishSelected = selectStageIdx === STAGES.length;
+                ctx.fillStyle = finishSelected ? '#facc15' : '#FFF';
+                ctx.fillText((finishSelected ? '> ' : '  ') + "FINISH & VIEW SUMMARY", 55, finishY - 5);
+
+                if (Math.floor(Date.now() / 500) % 2 === 0) {
+                    ctx.fillStyle = '#38bdf8';
+                    ctx.font = "8px 'Press Start 2P'";
+                    ctx.fillText("[A/D or ◀/▶] Move   [W/SPACE/ENTER] Confirm", 145, 385);
+                }
+                return;
+            }
+
             ctx.save();
             if (screenShakeTime > 0) {
                 const dx = (Math.random() - 0.5) * 8;
@@ -1561,6 +1905,7 @@
             ctx.fillStyle = stage.env.bg; ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = stage.env.floor; ctx.fillRect(0, 340, canvas.width, 60);
             ctx.fillStyle = stage.env.accent; ctx.fillRect(0, 340, canvas.width, 4);
+            if (stage.env.drawProps) stage.env.drawProps();
 
             ctx.fillStyle = '#FFF'; ctx.font = "10px 'Press Start 2P'";
             ctx.fillText(stage.id, 10, 20);
@@ -1595,7 +1940,7 @@
             }
 
             projectiles.forEach(p => drawProjectile(ctx, p, stage.player.weapon));
-            if (currentStageIdx >= 0 && currentStageIdx <= 4) {
+            if (currentStageIdx >= 0 && currentStageIdx < STAGES.length) {
                 drawBossProjectiles(ctx);
             }
             drawParticles(ctx);

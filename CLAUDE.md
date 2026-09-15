@@ -56,7 +56,7 @@ The `currentStageIdx >= STAGES.length` fallback branches in `update()`/`draw()` 
 
 ### Controls
 
-- Desktop: `KeyA`/`KeyD` move, `KeyW`/`Space` jump, `KeyJ` shoot, `Enter` advance (physical key codes, not layout-aware).
+- Desktop: `KeyA`/`KeyD` (or `ArrowLeft`/`ArrowRight`) move, `KeyJ` (or `ArrowUp`) jump, `KeyW`/`Space` shoot, `Enter` advance (physical key codes, not layout-aware). Arrow keys are normalized to their `KeyA`/`KeyD`/`KeyJ` equivalents in the keydown/keyup listeners rather than duplicated through the rest of the game logic.
 - Mobile: on-screen D-pad/buttons (`#mobile-controls`) shown via the `@media (max-width: 850px)` breakpoint; these buttons just set the same `keys[...]` flags read by `update()`.
 
 ## Content notes

@@ -8,7 +8,7 @@ An interactive, retro-inspired 2D platformer game that doubles as a professional
 
 This project was created to redefine the traditional resume. Rather than presenting a static PDF, **Mega CV** turns my career history into an engaging retro gameplay experience. 
 
-Recruiters and hiring managers play as **M-Gabo**, fighting through different stages of my career from 2013 to the present. Each stage features a unique boss representing a real-world system or data challenge I've tackled over the years. Defeating a boss unlocks the specific technical skills and tools acquired during that role, leading to a final summary stage with direct links to my professional profile.
+Recruiters and hiring managers play as **M-Gabo**, picking any stage from a Mega Man-style stage-select menu and fighting through different eras of my career from 2013 to the present. Each stage features a unique boss and a themed background representing a real-world system or data challenge I've tackled over the years. Defeating a boss unlocks the specific technical skills and tools acquired during that role, leading to a final summary stage with direct links to my professional profile.
 
 ---
 
@@ -26,38 +26,41 @@ The project is built entirely with vanilla web technologies, optimized to run di
 ## 🎮 Game Controls
 
 ### 💻 Desktop (Keyboard)
-- **[A] / [D]**: Move Left / Right
-- **[W] / [SPACE]**: Jump
-- **[J]**: Shoot Buster
-- **[ENTER]**: Next / Continue (after defeating a boss)
+- **[A] / [D]** or **[◀] / [▶]**: Move Left / Right (in the Stage Select menu, cycles through stages)
+- **[J]**: Jump
+- **[W] / [SPACE]**: Shoot Buster (in the Stage Select menu, confirms selection)
+- **[ENTER]**: Confirm / Next / Continue (after defeating a boss, returns to Stage Select)
 
 ### 📱 Mobile (Touch Screen)
-- **◀ / ▶**: Move Left / Right
-- **[W]**: Jump
-- **[J]**: Shoot
-- **[NEXT]**: Next / Continue (after defeating a boss)
+- **◀ / ▶**: Move Left / Right (in the Stage Select menu, cycles through stages)
+- **[J]**: Jump
+- **[W]**: Shoot (in the Stage Select menu, confirms selection)
+- **[NEXT]**: Confirm / Next / Continue (after defeating a boss, returns to Stage Select)
 
 ---
 
 ## 👾 Boss Guide & Inspirations
 
-Each boss is a custom-coded pixel-art recreation inspired by Capcom's classic *Mega Man X* series:
+Each boss is a custom-coded pixel-art recreation inspired by Capcom's classic *Mega Man X* series, set against a background themed to that role (a telecom NOC room, a futuristic supermarket, a cloud data center, an abandoned factory, an MDM lab, and a hotel-tech lobby):
 
-*   **Stage 1: Revenue Buffalo** (Inspired by *Blizzard Buffalo - MMX3*)
-    *   *Representing:* Revenue assurance implementations at Wedo Technologies (2013-2015).
+*   **Stage 1: Revenue Assurance** (Inspired by *Blizzard Buffalo - MMX3*)
+    *   *Representing:* Fraud & anomaly-detection rules for Telco and Retail at WeDo Technologies (2013-2015).
     *   *Mechanics:* Foot stomping, charging, and shooting ice shards.
 *   **Stage 2: Queued Orders** (Inspired by *Magma Dragoon - MMX4*)
-    *   *Representing:* E-commerce Order Management Systems at Liverpool/Walmart (2015-2019).
+    *   *Representing:* IBM Sterling OMS cloud migration and e-commerce performance testing at Liverpool/Walmart (2015-2019).
     *   *Mechanics:* Flaming Shoryuken jump punches and throwing fiery Hadouken fireballs.
-*   **Stage 3: Invoice Demon** (Inspired by *Storm Eagle - MMX*)
-    *   *Representing:* OMS Cloud migrations and decoupling at Nordstrom (2019-2021).
+*   **Stage 3: Invoice Backlog** (Inspired by *Storm Eagle - MMX*)
+    *   *Representing:* OMS migration to GCP (Docker/K8s) and monitoring modernization at Nordstrom (2019-2020).
     *   *Mechanics:* Flapping wings to blow the player back and swooping down in a diagonal dive bomb.
 *   **Stage 4: Legacy Data Ocean** (Inspired by *Vile - MMX*)
-    *   *Representing:* Datalake migration and Governance setup at Philip Morris Mexico (2021-2025).
+    *   *Representing:* Building a Snowflake data platform and enterprise governance at Philip Morris Mexico (2020-2025).
     *   *Mechanics:* Rapid shoulder plasma bursts and knee bombs that detonate into vertical fire pillars.
-*   **Stage 5: SAP ECC** (Inspired by *Sigma - MMX2*)
-    *   *Representing:* Customer MDM and Data Quality dimensions at Danone (2025-2026).
+*   **Stage 5: Data Quality for Customer's MDM** (Inspired by *Sigma - MMX2*)
+    *   *Representing:* Customer MDM governance and a custom Data Quality framework at Danone (2025-2026).
     *   *Mechanics:* Shooting floating electrical spheres and dashing across the screen with glowing energy claws.
+*   **Stage 6: Schema Drift Sentinel** (an original design, drone/server-inspired)
+    *   *Representing:* AI-accelerated data quality & governance at Coforge (client: Choice Hotels/SkyTouch), 2026-Current.
+    *   *Mechanics:* Firing twin data-burst projectiles and charging across the screen when it detects "drift."
 
 ---
 
